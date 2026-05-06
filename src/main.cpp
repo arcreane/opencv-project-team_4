@@ -1,12 +1,21 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include "thresholding.hpp"
 
-int main() {
+int main(int argc, char** argv) {
     std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-    cv::Mat img = cv::Mat::zeros(480, 640, CV_8UC3);
-    cv::putText(img, "MyEditor - OK", {50, 240},
-                cv::FONT_HERSHEY_SIMPLEX, 1.5, {0, 255, 0}, 2);
-    cv::imshow("MyEditor", img);
-    cv::waitKey(0);
+
+    std::string imagePath = (argc > 1) ? argv[1] : "sample.jpg";
+    cv::Mat img = cv::imread(imagePath);
+
+    if (img.empty()) {
+        std::cerr << "No image found at: " << imagePath << std::endl;
+        std::cerr << "Usage: MyImageEditor <image_path>" << std::endl;
+        return -1;
+    }
+
+    cv::imshow("Original", img);
+    runThresholding(img);
+
     return 0;
 }

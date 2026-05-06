@@ -10,6 +10,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(MyImageEditor
     src/main.cpp
+    src/thresholding.cpp
 )
 
 target_link_libraries(MyImageEditor ${OpenCV_LIBS})
