@@ -104,14 +104,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DragAndDropWindow.cpp" />
+    <ClCompile Include="imagedropLabel.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="QTMainWindow.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="QTMainWindow.ui" />
+    <QtUic Include="DragAndDropWindow.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="QTMainWindow.h" />
+    <QtMoc Include="imagedropLabel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DragAndDropWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
