@@ -1,19 +1,27 @@
-#ifndef DRAGANDROPWINDOW_H
-#define DRAGANDROPWINDOW_H
-
+#pragma once
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }  // ← changed to MainWindow
+namespace Ui { class Morphology; }
 QT_END_NAMESPACE
+class ErosionOperation;
 
 class DragAndDropWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit DragAndDropWindow(QWidget* parent = nullptr);
     ~DragAndDropWindow();
-private:
-    Ui::MainWindow* ui;  // ← changed to MainWindow
-};
 
-#endif
+private slots:
+    void createErosionInterface();
+    void createDilationInterface();
+    void createOpeningInterface();
+    void createClosingInterface();
+    void applyCurrentFilter();
+
+private:
+    Ui::Morphology* ui; 
+	QImage originalImage;
+    ErosionOperation* erosionOp;
+
+};

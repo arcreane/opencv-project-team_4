@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>Morphology</class>
+ <widget class="QMainWindow" name="Morphology">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,10 +17,10 @@
    <widget class="ImageDropLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>170</y>
-      <width>151</width>
-      <height>61</height>
+      <x>180</x>
+      <y>70</y>
+      <width>431</width>
+      <height>381</height>
      </rect>
     </property>
     <property name="acceptDrops">
@@ -33,17 +33,183 @@
      <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="ErosionFilter">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>120</y>
+      <x>20</x>
+      <y>90</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Erosion Filter</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DilationFilter">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>320</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dilation Filter</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="OpeningFilter">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>90</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Opening Filter</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="ClosingFilter">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>320</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Closing Filter</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="iterationNumberBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>190</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iterationLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>160</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Define number of iterations</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="erosionTypeLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>240</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Define the type of erosion</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="ellipseMorph">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>310</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ellipse</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rectMorph">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>270</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Rectangle</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="crossMorph">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>290</y>
+      <width>91</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Cross</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="kernelSizeLabel">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>370</y>
+      <width>171</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Define kernel size</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="kernelSizeBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>410</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="resultLabel">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>20</y>
+      <width>191</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="applyButton">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>470</y>
       <width>80</width>
       <height>24</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Apply Filter</string>
     </property>
    </widget>
   </widget>
