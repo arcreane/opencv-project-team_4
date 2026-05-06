@@ -12,6 +12,7 @@ add_executable(MyImageEditor
     src/main.cpp
     src/thresholding.cpp
     src/creative_effects.cpp
+    src/interactive_tools.cpp
 )
 
 target_link_libraries(MyImageEditor ${OpenCV_LIBS})

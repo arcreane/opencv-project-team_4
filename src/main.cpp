@@ -1,6 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include "thresholding.hpp"
+#include "creative_effects.hpp"
+#include "interactive_tools.hpp"
 
 int main(int argc, char** argv) {
     std::cout << "OpenCV version: " << CV_VERSION << std::endl;
@@ -16,6 +18,8 @@ int main(int argc, char** argv) {
 
     cv::imshow("Original", img);
     runThresholding(img);
+    runCreativeEffects(img);
+    runInteractiveTools(img);
 
     return 0;
 }
