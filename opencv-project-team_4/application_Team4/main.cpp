@@ -1,14 +1,11 @@
-#include <QTMainWindow.h>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QWidget>
+#include <QApplication>
+#include "DragAndDropWindow.h"  
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
-    QTMainWindow window;
-    window.resize(320, 240);
+
+    DragAndDropWindow window;
     window.show();
-    window.setWindowTitle(
-        QApplication::translate("toplevel", "Top-level widget"));
+
     return app.exec();
 }
