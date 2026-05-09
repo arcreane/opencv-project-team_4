@@ -1,17 +1,17 @@
-#include "DilationFilter.h"
+#include "ClosingFilter.h"
 #include "ui_DragAndDropWindow.h"
 #include <opencv2/opencv.hpp>
 
 
-DilationOperation::DilationOperation(Ui_Morphology* ui, QObject* parent)
+ClosingOperation::ClosingOperation(Ui_Morphology* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
 
-void DilationOperation::showInterface() {
-	ui->DilationFilter->move(20, 90);
-    ui->ErosionFilter->setVisible(false);
+void ClosingOperation::showInterface() {
+    ui->DilationFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
-    ui->ClosingFilter->setVisible(false);
+    ui->ErosionFilter->setVisible(false);
+	ui->ClosingFilter->move(20, 90);
     ui->label->move(280, ui->label->y());
     ui->label->resize(400, ui->label->height());
     ui->iterationNumberBox->setVisible(true);
@@ -28,7 +28,7 @@ void DilationOperation::showInterface() {
     ui->applyButton->setVisible(true);
 }
 
-void DilationOperation::hideInterface() {
+void ClosingOperation::hideInterface() {
     ui->iterationNumberBox->setVisible(false);
     ui->iterationLabel->setVisible(false);
     ui->rectMorph->setVisible(false);
@@ -40,30 +40,30 @@ void DilationOperation::hideInterface() {
     ui->kernelSizeBox->setVisible(false);
     ui->label->move(170, ui->label->y());
     ui->label->resize(431, ui->label->height());
-    ui->ErosionFilter->setVisible(true);
+    ui->DilationFilter->setVisible(true);
     ui->OpeningFilter->setVisible(true);
-    ui->ClosingFilter->setVisible(true);
+    ui->ErosionFilter->setVisible(true);
     ui->applyButton->setVisible(false);
-	ui->DilationFilter->move(20, 320);
+	ui->ClosingFilter->move(630, 320);
 }
 
-cv::Mat DilationOperation::applyDilation(const cv::Mat& inputImage) {
+cv::Mat ClosingOperation::applyClosing(const cv::Mat& inputImage) {
 
-    int dilationType = 0;
+    int closingType = 0;
     if (ui->rectMorph->isChecked()) {
-        dilationType = cv::MORPH_RECT;
+        closingType = cv::MORPH_RECT;
     }
     else if (ui->ellipseMorph->isChecked()) {
-        dilationType = cv::MORPH_ELLIPSE;
+        closingType = cv::MORPH_ELLIPSE;
     }
     else if (ui->crossMorph->isChecked()) {
-        dilationType = cv::MORPH_CROSS;
+        closingType = cv::MORPH_CROSS;
     }
     int kernelSize = ui->kernelSizeBox->value();
     int iteration = ui->iterationNumberBox->value();
-    cv::Mat element = cv::getStructuringElement(dilationType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
+    cv::Mat element = cv::getStructuringElement(closingType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
     cv::Mat outputImage;
-    cv::dilate(inputImage, outputImage, element, cv::Point(-1, -1), iteration);
+    cv::morphologyEx(inputImage, outputImage, cv::MORPH_CLOSE, element, cv::Point(-1, -1), iteration);
 
     return outputImage;
 }

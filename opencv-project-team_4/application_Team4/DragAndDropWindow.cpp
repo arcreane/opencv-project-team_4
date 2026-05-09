@@ -9,6 +9,8 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
     ui->setupUi(this);
 	erosionOp = new ErosionOperation(ui, this);
 	dilationOp = new DilationOperation(ui, this);
+	openingOp = new OpeningOperation(ui, this);
+	closingOp = new ClosingOperation(ui, this);
 	ui->iterationNumberBox->setVisible(false);
 	ui->iterationLabel->setVisible(false);
 	ui->rectMorph->setVisible(false);
@@ -64,26 +66,18 @@ void DragAndDropWindow::createDilationInterface() {
 }
 void DragAndDropWindow::createOpeningInterface() {
 	if (ui->ErosionFilter->isVisible() || ui->DilationFilter->isVisible() || ui->ClosingFilter->isVisible()) {
-		ui->ErosionFilter->setVisible(false);
-		ui->DilationFilter->setVisible(false);
-		ui->ClosingFilter->setVisible(false);
+		openingOp->showInterface();
 	}
 	else {
-		ui->ErosionFilter->setVisible(true);
-		ui->DilationFilter->setVisible(true);
-		ui->ClosingFilter->setVisible(true);
+		openingOp->hideInterface();
 	}
 }
 void DragAndDropWindow::createClosingInterface() {
-	if (ui->ErosionFilter->isVisible() || ui->DilationFilter->isVisible() || ui->OpeningFilter->isVisible()) {
-		ui->ErosionFilter->setVisible(false);
-		ui->DilationFilter->setVisible(false);
-		ui->OpeningFilter->setVisible(false);
+	if (ui->ErosionFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->DilationFilter->isVisible()) {
+		closingOp->showInterface();
 	}
 	else {
-		ui->ErosionFilter->setVisible(true);
-		ui->DilationFilter->setVisible(true);
-		ui->OpeningFilter->setVisible(true);
+		closingOp->hideInterface();
 	}
 
 }
@@ -107,6 +101,12 @@ void DragAndDropWindow::applyCurrentFilter() {
 	}
 	if (ui->DilationFilter->isVisible()) {
 		output = dilationOp->applyDilation(input);
+	}
+	if (ui->OpeningFilter->isVisible()) {
+		output = openingOp->applyOpening(input);
+	}
+	if (ui->ClosingFilter->isVisible()) {
+		output = closingOp->applyClosing(input);
 	}
 	QImage  result = MatToQImage(output);
 

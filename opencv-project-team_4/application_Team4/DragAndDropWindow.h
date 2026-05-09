@@ -1,5 +1,8 @@
 #pragma once
 #include <DilationFilter.h>
+#include <ErosionFilter.h>
+#include <OpeningFilter.h>
+#include <ClosingFilter.h>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -25,5 +28,7 @@ private:
 	QImage originalImage;
     ErosionOperation* erosionOp;
     DilationOperation* dilationOp;
+	OpeningOperation* openingOp;
+	ClosingOperation* closingOp;
 
 };

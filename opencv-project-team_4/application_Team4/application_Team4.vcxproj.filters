@@ -38,6 +38,12 @@
     <ClCompile Include="DilationFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpeningFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ClosingFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h">
@@ -50,6 +56,12 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="DilationFilter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="OpeningFilter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="ClosingFilter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
