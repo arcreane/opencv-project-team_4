@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DilationFilter.cpp" />
     <ClCompile Include="DragAndDropWindow.cpp" />
     <ClCompile Include="ErosionFilter.cpp" />
     <ClCompile Include="imagedropLabel.cpp" />
@@ -128,6 +129,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ErosionFilter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DilationFilter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

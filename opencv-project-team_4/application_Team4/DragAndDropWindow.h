@@ -1,4 +1,5 @@
 #pragma once
+#include <DilationFilter.h>
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -23,5 +24,6 @@ private:
     Ui::Morphology* ui; 
 	QImage originalImage;
     ErosionOperation* erosionOp;
+    DilationOperation* dilationOp;
 
 };

@@ -35,6 +35,9 @@
     <ClCompile Include="ErosionFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DilationFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h">
@@ -44,6 +47,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ErosionFilter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="DilationFilter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>

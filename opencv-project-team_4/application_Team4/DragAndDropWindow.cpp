@@ -1,12 +1,14 @@
 #include "DragAndDropWindow.h"
 #include "ui_DragAndDropWindow.h"
 #include "ErosionFilter.h"
+#include "DilationFilter.h"
 
 #include <QDebug>
 DragAndDropWindow::DragAndDropWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::Morphology) {
     ui->setupUi(this);
 	erosionOp = new ErosionOperation(ui, this);
+	dilationOp = new DilationOperation(ui, this);
 	ui->iterationNumberBox->setVisible(false);
 	ui->iterationLabel->setVisible(false);
 	ui->rectMorph->setVisible(false);
@@ -54,14 +56,10 @@ void DragAndDropWindow::createErosionInterface() {
 }
 void DragAndDropWindow::createDilationInterface() {
 	if (ui->ErosionFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->ClosingFilter->isVisible()) {
-		ui->ErosionFilter->setVisible(false);
-		ui->OpeningFilter->setVisible(false);
-		ui->ClosingFilter->setVisible(false);
+		dilationOp->showInterface();
 	}
 	else {
-		ui->ErosionFilter->setVisible(true);
-		ui->OpeningFilter->setVisible(true);
-		ui->ClosingFilter->setVisible(true);
+		dilationOp->hideInterface();
 	}
 }
 void DragAndDropWindow::createOpeningInterface() {
@@ -102,16 +100,21 @@ QImage MatToQImage(const cv::Mat& mat) {
 }
 void DragAndDropWindow::applyCurrentFilter() {
 	if (originalImage.isNull()) return;
-
+	cv::Mat output;
 	cv::Mat input = QImageToMat(originalImage);
-	cv::Mat output = erosionOp->applyErosion(input);
+	if (ui->ErosionFilter->isVisible()) {
+		output = erosionOp->applyErosion(input);
+	}
+	if (ui->DilationFilter->isVisible()) {
+		output = dilationOp->applyDilation(input);
+	}
 	QImage  result = MatToQImage(output);
 
 	ui->resultLabel->move(700, 70);
 	ui->resultLabel->resize(400, 381);
 	ui->resultLabel->setVisible(true);
-	ui->resultLabel->raise();          // ← ajoute ici
-	ui->resultLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);  // ← ajoute ici
+	ui->resultLabel->raise();          
+	ui->resultLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);  
 
 	QPixmap pix = QPixmap::fromImage(result).scaled(
 		ui->resultLabel->size(),
@@ -123,7 +126,5 @@ void DragAndDropWindow::applyCurrentFilter() {
 	ui->resultLabel->setStyleSheet("border: 2px dashed gray; background: transparent;");
 	ui->resultLabel->raise();
 	ui->resultLabel->repaint();
-	ui->resultLabel->update();       // ← ajoute ici
-
-	qDebug() << "hasPixmap:" << (!ui->resultLabel->pixmap().isNull());
+	ui->resultLabel->update();       
 }
