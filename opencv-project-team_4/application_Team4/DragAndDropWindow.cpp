@@ -2,7 +2,7 @@
 #include "ui_DragAndDropWindow.h"
 #include "ErosionFilter.h"
 
-
+#include <QDebug>
 DragAndDropWindow::DragAndDropWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::Morphology) {
     ui->setupUi(this);
@@ -12,6 +12,9 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 	ui->rectMorph->setVisible(false);
 	ui->ellipseMorph->setVisible(false);
 	ui->crossMorph->setVisible(false);
+	ui->kernelSizeLabel->setVisible(false);
+	ui->kernelSizeBox->setVisible(false);
+	ui->resultLabel->setVisible(false);
 	ui->erosionTypeLabel->setVisible(false);
 	ui->ErosionFilter->setEnabled(false);
 	ui->DilationFilter->setEnabled(false);
@@ -25,6 +28,7 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 			ui->OpeningFilter->setEnabled(true);
 			ui->ClosingFilter->setEnabled(true);
 		});
+	ui->applyButton->setVisible(false);
 	connect(ui->ErosionFilter, &QPushButton::clicked, this, &DragAndDropWindow::createErosionInterface);
 	connect(ui->DilationFilter, &QPushButton::clicked, this, &DragAndDropWindow::createDilationInterface);
 	connect(ui->OpeningFilter, &QPushButton::clicked, this, &DragAndDropWindow::createOpeningInterface);
@@ -85,11 +89,11 @@ void DragAndDropWindow::createClosingInterface() {
 	}
 
 }
-// Helpers de conversion
 cv::Mat QImageToMat(const QImage& img) {
-	return cv::Mat(img.height(), img.width(), CV_8UC1,
-		const_cast<uchar*>(img.bits()),
-		img.bytesPerLine()).clone();
+	QImage gray = img.convertToFormat(QImage::Format_Grayscale8);
+	return cv::Mat(gray.height(), gray.width(), CV_8UC1,
+		const_cast<uchar*>(gray.bits()),
+		gray.bytesPerLine()).clone();
 }
 
 QImage MatToQImage(const cv::Mat& mat) {
@@ -101,15 +105,25 @@ void DragAndDropWindow::applyCurrentFilter() {
 
 	cv::Mat input = QImageToMat(originalImage);
 	cv::Mat output = erosionOp->applyErosion(input);
-	QImage result = MatToQImage(output);
+	QImage  result = MatToQImage(output);
 
-	// Affiche le résultat dans le label résultat — PAS dans l'original
-	ui->resultLabel->setPixmap(
-		QPixmap::fromImage(result).scaled(
-			ui->resultLabel->size(),
-			Qt::KeepAspectRatio,
-			Qt::SmoothTransformation
-		)
+	ui->resultLabel->move(700, 70);
+	ui->resultLabel->resize(400, 381);
+	ui->resultLabel->setVisible(true);
+	ui->resultLabel->raise();          // ← ajoute ici
+	ui->resultLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);  // ← ajoute ici
+
+	QPixmap pix = QPixmap::fromImage(result).scaled(
+		ui->resultLabel->size(),
+		Qt::KeepAspectRatio,
+		Qt::SmoothTransformation
 	);
-	ui->resultLabel->setStyleSheet("border: 2px dashed gray;");
+
+	ui->resultLabel->setPixmap(pix);
+	ui->resultLabel->setStyleSheet("border: 2px dashed gray; background: transparent;");
+	ui->resultLabel->raise();
+	ui->resultLabel->repaint();
+	ui->resultLabel->update();       // ← ajoute ici
+
+	qDebug() << "hasPixmap:" << (!ui->resultLabel->pixmap().isNull());
 }

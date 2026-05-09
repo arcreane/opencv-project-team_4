@@ -12,6 +12,7 @@ public:
     void showInterface();
     void hideInterface();
 	cv::Mat applyErosion(const cv::Mat& inputImage);
+       
 
 private:
     Ui_Morphology* ui;
