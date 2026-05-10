@@ -24,6 +24,8 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 	ui->DilationFilter->setEnabled(false);
 	ui->OpeningFilter->setEnabled(false);
 	ui->ClosingFilter->setEnabled(false);
+	ui->label->setGrayscaleOnly(true);
+
 	connect(ui->label, &ImageDropLabel::imageDropped,
 		this, [this](const QImage& img) {
 			originalImage = img;
@@ -38,9 +40,6 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 	connect(ui->OpeningFilter, &QPushButton::clicked, this, &DragAndDropWindow::createOpeningInterface);
 	connect(ui->ClosingFilter, &QPushButton::clicked, this, &DragAndDropWindow::createClosingInterface);
 	connect(ui->applyButton, &QPushButton::clicked, this, &DragAndDropWindow::applyCurrentFilter);
-
-	
-
 }
 
 DragAndDropWindow::~DragAndDropWindow() {

@@ -112,9 +112,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CannyFilter.cpp" />
     <ClCompile Include="ClosingFilter.cpp" />
     <ClCompile Include="DilationFilter.cpp" />
     <ClCompile Include="DragAndDropWindow.cpp" />
+    <ClCompile Include="DragDropCannyEdge.cpp" />
     <ClCompile Include="ErosionFilter.cpp" />
     <ClCompile Include="imagedropLabel.cpp" />
     <ClCompile Include="main.cpp" />
@@ -122,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="DragAndDropWindow.ui" />
+    <QtUic Include="DragDropCannyEdge.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h" />
@@ -140,6 +143,12 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ClosingFilter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DragDropCannyEdge.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="CannyFilter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

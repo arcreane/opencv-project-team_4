@@ -44,6 +44,12 @@
     <ClCompile Include="ClosingFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DragDropCannyEdge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CannyFilter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h">
@@ -64,9 +70,18 @@
     <QtMoc Include="ClosingFilter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="DragDropCannyEdge.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="CannyFilter.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="DragAndDropWindow.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="DragDropCannyEdge.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
