@@ -50,6 +50,9 @@
     <ClCompile Include="CannyFilter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DeepLearningWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h">
@@ -76,12 +79,18 @@
     <QtMoc Include="CannyFilter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="DeepLearningWindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="DragAndDropWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="DragDropCannyEdge.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="DeepLearningWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

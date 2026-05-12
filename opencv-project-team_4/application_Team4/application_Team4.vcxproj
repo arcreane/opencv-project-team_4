@@ -114,6 +114,7 @@
   <ItemGroup>
     <ClCompile Include="CannyFilter.cpp" />
     <ClCompile Include="ClosingFilter.cpp" />
+    <ClCompile Include="DeepLearningWindow.cpp" />
     <ClCompile Include="DilationFilter.cpp" />
     <ClCompile Include="DragAndDropWindow.cpp" />
     <ClCompile Include="DragDropCannyEdge.cpp" />
@@ -123,6 +124,7 @@
     <ClCompile Include="OpeningFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="DeepLearningWindow.ui" />
     <QtUic Include="DragAndDropWindow.ui" />
     <QtUic Include="DragDropCannyEdge.ui" />
   </ItemGroup>
@@ -149,6 +151,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="CannyFilter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="DeepLearningWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
