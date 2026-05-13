@@ -20,16 +20,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StartInterface.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="StartInterface.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="StartInterface.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </QtMoc>
   </ItemGroup>
 </Project>
