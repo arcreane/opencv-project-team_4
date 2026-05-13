@@ -1,1 +1,7 @@
 opencv-project-team_4/.vs/opencv-project-team_4.slnx/v18/Browse.VC.db-wal
+.vs/
+*.db
+*.db-shm
+*.db-wal
+*.vsidx
+*.db-wal
