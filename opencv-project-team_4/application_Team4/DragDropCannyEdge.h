@@ -1,6 +1,8 @@
 #pragma once
 #include "CannyFilter.h"
 #include <QMainWindow>
+#include <QImage>
+
 
 
 QT_BEGIN_NAMESPACE

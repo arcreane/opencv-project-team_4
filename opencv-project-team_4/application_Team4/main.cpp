@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "DragAndDropWindow.h"  
 #include "DragDropCannyEdge.h"
+#include "DeepLearningWindow.h"
 
 int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
@@ -10,7 +11,9 @@ int main(int argc, char* argv[]) {
     //#window.show();
 	DragDropCannyEdge cannyWindow;
 	cannyWindow.setWindowTitle("Canny Edge Detection");
-	cannyWindow.show();
-	
+	//cannyWindow.show();
+	DeepLearningWindow dlWindow;
+	dlWindow.setWindowTitle("YOLOv8 Object Detection");
+	dlWindow.show();
     return app.exec();
 }
