@@ -11,9 +11,9 @@ void OpeningOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->ErosionFilter->setVisible(false);
     ui->ClosingFilter->setVisible(false);
-    ui->OpeningFilter->move(20, 90);
-    ui->label->move(280, ui->label->y());
-    ui->label->resize(400, ui->label->height());
+	ui->OpeningFilter->setText("Back");
+	ui->LabelTitle->setText("Morphology - Opening Filter");
+    ui->erosionTypeLabel->setText("Define the type of opening");
     ui->iterationNumberBox->setVisible(true);
     ui->iterationLabel->setVisible(true);
     ui->rectMorph->setVisible(true);
@@ -38,13 +38,13 @@ void OpeningOperation::hideInterface() {
     ui->resultLabel->setVisible(false);
     ui->kernelSizeLabel->setVisible(false);
     ui->kernelSizeBox->setVisible(false);
-    ui->label->move(170, ui->label->y());
-    ui->label->resize(431, ui->label->height());
     ui->DilationFilter->setVisible(true);
     ui->ErosionFilter->setVisible(true);
     ui->ClosingFilter->setVisible(true);
     ui->applyButton->setVisible(false);
-	ui->OpeningFilter->move(700, 70);
+	ui->OpeningFilter->setText("Opening Filter");
+    ui->LabelTitle->setText("MORPHOLOGY");
+
 }
 
 cv::Mat OpeningOperation::applyOpening(const cv::Mat& inputImage) {

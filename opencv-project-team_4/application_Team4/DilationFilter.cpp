@@ -8,13 +8,13 @@ DilationOperation::DilationOperation(Ui_Morphology* ui, QObject* parent)
 }
 
 void DilationOperation::showInterface() {
-	ui->DilationFilter->move(20, 90);
+	ui->DilationFilter->setText("Back");
     ui->ErosionFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
     ui->ClosingFilter->setVisible(false);
-    ui->label->move(280, ui->label->y());
-    ui->label->resize(400, ui->label->height());
     ui->iterationNumberBox->setVisible(true);
+	ui->LabelTitle->setText("Morphology - Dilation Filter");
+	ui->erosionTypeLabel->setText("Define the type of dilation");
     ui->iterationLabel->setVisible(true);
     ui->rectMorph->setVisible(true);
     ui->rectMorph->setToolTip("Rectangular SE — general purpose.");
@@ -38,13 +38,13 @@ void DilationOperation::hideInterface() {
     ui->resultLabel->setVisible(false);
     ui->kernelSizeLabel->setVisible(false);
     ui->kernelSizeBox->setVisible(false);
-    ui->label->move(170, ui->label->y());
-    ui->label->resize(431, ui->label->height());
     ui->ErosionFilter->setVisible(true);
     ui->OpeningFilter->setVisible(true);
     ui->ClosingFilter->setVisible(true);
     ui->applyButton->setVisible(false);
-	ui->DilationFilter->move(20, 320);
+	ui->DilationFilter->setText("Dilation Filter");
+    ui->LabelTitle->setText("MORPHOLOGY");
+
 }
 
 cv::Mat DilationOperation::applyDilation(const cv::Mat& inputImage) {

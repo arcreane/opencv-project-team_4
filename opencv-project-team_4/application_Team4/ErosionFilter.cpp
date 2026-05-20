@@ -11,9 +11,8 @@ void ErosionOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
     ui->ClosingFilter->setVisible(false);
-    ui->label->move(280, ui->label->y());
-    ui->label->resize(400, ui->label->height()); 
     ui->iterationNumberBox->setVisible(true);
+	ui->LabelTitle->setText("Morphology - Erosion Filter");
     ui->iterationLabel->setVisible(true);
     ui->rectMorph->setVisible(true);
     ui->rectMorph->setToolTip("Rectangular SE — general purpose.");
@@ -25,6 +24,7 @@ void ErosionOperation::showInterface() {
 	ui->kernelSizeLabel->setVisible(true);
 	ui->kernelSizeBox->setVisible(true);
 	ui->applyButton->setVisible(true);
+    ui->ErosionFilter->setText("Back");
 }
 
 void ErosionOperation::hideInterface() {
@@ -37,12 +37,13 @@ void ErosionOperation::hideInterface() {
 	ui->resultLabel->setVisible(false);
     ui->kernelSizeLabel->setVisible(false);
     ui->kernelSizeBox->setVisible(false);
-    ui->label->move(170, ui->label->y());
-    ui->label->resize(431, ui->label->height());
     ui->DilationFilter->setVisible(true);
     ui->OpeningFilter->setVisible(true);
     ui->ClosingFilter->setVisible(true);
 	ui->applyButton->setVisible(false);
+    ui->ErosionFilter->setText("Erosion Filter");
+	ui->LabelTitle->setText("MORPHOLOGY");
+
 }
 
     cv::Mat ErosionOperation:: applyErosion(const cv::Mat& inputImage) {
