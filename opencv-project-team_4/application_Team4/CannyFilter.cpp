@@ -8,8 +8,8 @@ CannyOperation::CannyOperation(Ui_CannyEdge* ui, QObject* parent)
 }
 
 void CannyOperation::showInterface() {
-    ui->cannyFilterButton->move(20, 90);
 	ui->apertureBox->setVisible(true);
+	ui->cannyFilterButton->setText("Back");
 	ui->apertureLabel->setVisible(true);
 	ui->lowerTslider->setVisible(true);
 	ui->higherTslider->setVisible(true);
@@ -20,7 +20,6 @@ void CannyOperation::showInterface() {
 }
 
 void CannyOperation::hideInterface() {
-    ui->cannyFilterButton->move(70, 230);
     ui->apertureBox->setVisible(false);
     ui->apertureLabel->setVisible(false);
     ui->lowerTslider->setVisible(false);
@@ -28,6 +27,7 @@ void CannyOperation::hideInterface() {
     ui->lowerTlabel->setVisible(false);
     ui->higherTlabel->setVisible(false);
     ui->applyCannyFilterButton->setVisible(false);
+	ui->cannyFilterButton->setText("Canny Edge Filter");
 }
 
 cv::Mat CannyOperation::applyCannyEdgeFilter(const cv::Mat& inputImage) {
