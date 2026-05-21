@@ -1,8 +1,7 @@
 #pragma once
 #include "CannyFilter.h"
 #include <QMainWindow>
-#include <QImage>
-
+#include <opencv2/opencv.hpp>
 
 
 QT_BEGIN_NAMESPACE
@@ -14,16 +13,20 @@ class DragDropCannyEdge : public QMainWindow {
 public:
     explicit DragDropCannyEdge(QWidget* parent = nullptr);
     ~DragDropCannyEdge();
+    void resizeEvent(QResizeEvent* event) override;
+    void repositionWidgets();
 private slots:
     void showCannyInterface();
-	void hideCannyInterface();
     void onApplyCannyClicked();
+	void onSliderChanged();
 
 
 private:
     Ui::CannyEdge* ui;
     QImage originalImage;
     CannyOperation* cannyOp;
+    cv::Mat inputImage;
+    bool cannyAppliedOnce = false;
+	bool resizeBouton = true;
    
-
 }; 

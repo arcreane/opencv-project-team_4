@@ -15,6 +15,8 @@ class DragAndDropWindow : public QMainWindow {
 public:
     explicit DragAndDropWindow(QWidget* parent = nullptr);
     ~DragAndDropWindow();
+    void resizeEvent(QResizeEvent* event) override;
+    void repositionWidgets();
 
 private slots:
     void createErosionInterface();

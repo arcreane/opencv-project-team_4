@@ -11,9 +11,9 @@ void ClosingOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
     ui->ErosionFilter->setVisible(false);
-	ui->ClosingFilter->move(20, 90);
-    ui->label->move(280, ui->label->y());
-    ui->label->resize(400, ui->label->height());
+    ui->ClosingFilter->setText("Back");
+	ui->LabelTitle->setText("Morphology - Closing Filter");
+	ui->erosionTypeLabel->setText("Define the type of closing");
     ui->iterationNumberBox->setVisible(true);
     ui->iterationLabel->setVisible(true);
     ui->rectMorph->setVisible(true);
@@ -38,13 +38,12 @@ void ClosingOperation::hideInterface() {
     ui->resultLabel->setVisible(false);
     ui->kernelSizeLabel->setVisible(false);
     ui->kernelSizeBox->setVisible(false);
-    ui->label->move(170, ui->label->y());
-    ui->label->resize(431, ui->label->height());
     ui->DilationFilter->setVisible(true);
     ui->OpeningFilter->setVisible(true);
     ui->ErosionFilter->setVisible(true);
     ui->applyButton->setVisible(false);
-	ui->ClosingFilter->move(630, 320);
+    ui->LabelTitle->setText("MORPHOLOGY");
+	ui->ClosingFilter->setText("Closing Filter");
 }
 
 cv::Mat ClosingOperation::applyClosing(const cv::Mat& inputImage) {
