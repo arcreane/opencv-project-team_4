@@ -8,6 +8,7 @@
 #include <opencv2/dnn.hpp>
 #include <fstream>   
 #include <string> 
+#include <QFileDialog>
 
 
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
@@ -44,6 +45,7 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
     loadClassNames(namesPath.toStdString());
     ui->labelDropDeep->setGrayscaleOnly(false);
     ui->labelDropDeep->setFixPosition(true);
+	ui->savedButton->setVisible(false);
     qDebug() << ui->labelDropDeep->metaObject()->className();
 	connect(ui->labelDropDeep, &ImageDropLabel::imageDropped,
 		this, [this](const QImage& img) {
@@ -51,8 +53,9 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 			ui->detectObjectDeep->setEnabled(true);
 		});
 
-	connect(ui->detectObjectDeep, &QPushButton::clicked,
-		this, &DeepLearningWindow::deepLearningapply);
+	connect(ui->detectObjectDeep, &QPushButton::clicked,this, &DeepLearningWindow::deepLearningapply);
+    connect(ui->savedButton, &QPushButton::clicked, this, &DeepLearningWindow::saveImage);
+
 	
 }
 
@@ -92,16 +95,25 @@ void DeepLearningWindow::repositionWidgets() {
 
     ui->labelOutput->setGeometry(c2, rowY, colW, dropH);
     //ui->labelOutput->setFixedSize(colW, dropH);
+    int totalBtnW = c2 + colW - c1;
+    int btnW = (totalBtnW - 2 * gap) / 3;
+    int btnY = rowY + dropH + gap;
 
-    int totalW = colW + gap + colW;
-    int btnW = totalW * 0.30;
-    ui->detectObjectDeep->setGeometry(
-        c1 + 3.2 * marginX,
-        rowY + dropH + gap,
-        btnW, btnH
-    );
+    ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);
+    ui->savedButton->setGeometry(c2 + btnW, btnY, btnW, btnH);
 }
-
+void DeepLearningWindow::saveImage() {
+    QPixmap pix = ui->labelOutput->pixmap(Qt::ReturnByValue);
+    if (!pix.isNull()) {
+        QString fileName = QFileDialog::getSaveFileName(
+            this, "Save Image", "",
+            "PNG Image (*.png);;JPEG Image (*.jpg)"
+        );
+        if (!fileName.isEmpty()) {
+            pix.save(fileName);
+        }
+    }
+}
 DeepLearningWindow::~DeepLearningWindow() {
 	delete ui;
 }
@@ -116,7 +128,8 @@ void DeepLearningWindow::loadClassNames(const std::string& path) {
 void DeepLearningWindow::deepLearningapply() {
     if (originalImage.isNull() || net.empty()) return;
 	ui->detectObjectDeep->setText("Detect new object");
-
+	ui->savedButton->setVisible(true);
+	repositionWidgets();
     // QImage → cv::Mat BGR
     QImage rgb = originalImage.convertToFormat(QImage::Format_RGB888);
     cv::Mat imgMat(rgb.height(), rgb.width(), CV_8UC3,
@@ -165,6 +178,7 @@ void DeepLearningWindow::deepLearningapply() {
     if (indices.empty()) {
 
         ui->labelOutput->setVisible(true);
+        ui->labelOutput->setStyleSheet("border: 2px dashed gray;");
         ui->labelOutput->setText(
             "No detection found.\nTry with another picture."
         );

@@ -43,11 +43,13 @@ void ErosionOperation::hideInterface() {
 	ui->applyButton->setVisible(false);
     ui->ErosionFilter->setText("Erosion Filter");
 	ui->LabelTitle->setText("MORPHOLOGY");
-
+    ui->resultLabel->clear();
+    ui->label->clear();
+    ui->savedButton->setVisible(false);
 }
 
     cv::Mat ErosionOperation:: applyErosion(const cv::Mat& inputImage) {
-  
+		ui->savedButton->setVisible(true);
         int erosionType = 0;
         if (ui->rectMorph->isChecked()) {
             erosionType = cv::MORPH_RECT;

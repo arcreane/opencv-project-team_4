@@ -14,6 +14,6 @@ int main(int argc, char* argv[]) {
 	//cannyWindow.show();
 	DeepLearningWindow dlWindow;
 	dlWindow.setWindowTitle("YOLOv8 Object Detection");
-	cannyWindow.show();
+	window.show();
     return app.exec();
 }

@@ -2,6 +2,7 @@
 #include "ui_DragAndDropWindow.h"
 #include "ErosionFilter.h"
 #include "DilationFilter.h"
+#include <QFileDialog>
 
 #include <QDebug>
 DragAndDropWindow::DragAndDropWindow(QWidget* parent)
@@ -31,6 +32,7 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 	ui->DilationFilter->setEnabled(false);
 	ui->OpeningFilter->setEnabled(false);
 	ui->ClosingFilter->setEnabled(false);
+	ui->savedButton->setVisible(false);
 	ui->label->setGrayscaleOnly(true);
 	ui->LabelTitle->setAlignment(Qt::AlignCenter);
 
@@ -48,9 +50,21 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 	connect(ui->OpeningFilter, &QPushButton::clicked, this, &DragAndDropWindow::createOpeningInterface);
 	connect(ui->ClosingFilter, &QPushButton::clicked, this, &DragAndDropWindow::createClosingInterface);
 	connect(ui->applyButton, &QPushButton::clicked, this, &DragAndDropWindow::applyCurrentFilter);
+	connect(ui->savedButton, &QPushButton::clicked, this, &DragAndDropWindow::saveImage);
 
 }
-
+void DragAndDropWindow::saveImage() {
+	QPixmap pix = ui->resultLabel->pixmap(Qt::ReturnByValue);
+	if (!pix.isNull()) {
+		QString fileName = QFileDialog::getSaveFileName(
+			this, "Save Image", "",
+			"PNG Image (*.png);;JPEG Image (*.jpg)"
+		);
+		if (!fileName.isEmpty()) {
+			pix.save(fileName);
+		}
+	}
+}
 void DragAndDropWindow::resizeEvent(QResizeEvent* event) {
 	QMainWindow::resizeEvent(event);
 	repositionWidgets();
@@ -88,6 +102,11 @@ void DragAndDropWindow::repositionWidgets() {
 	ui->resultLabel->setGeometry(c3, rowY, column3, dropH);
 	ui->applyButton->setGeometry(
 		c2 + (column2 - column1) / 2,
+		rowY + dropH + gap * 2,
+		column1, btnH
+	);
+	ui->savedButton->setGeometry(
+		c3 + (column3 - column1) / 2,
 		rowY + dropH + gap * 2,
 		column1, btnH
 	);

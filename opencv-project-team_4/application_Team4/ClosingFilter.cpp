@@ -44,10 +44,13 @@ void ClosingOperation::hideInterface() {
     ui->applyButton->setVisible(false);
     ui->LabelTitle->setText("MORPHOLOGY");
 	ui->ClosingFilter->setText("Closing Filter");
+    ui->resultLabel->clear();
+    ui->label->clear();
+    ui->savedButton->setVisible(false);
 }
 
 cv::Mat ClosingOperation::applyClosing(const cv::Mat& inputImage) {
-
+	ui->savedButton->setVisible(true);
     int closingType = 0;
     if (ui->rectMorph->isChecked()) {
         closingType = cv::MORPH_RECT;

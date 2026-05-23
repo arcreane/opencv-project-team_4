@@ -2,6 +2,7 @@
 #include "ui_DragDropCannyEdge.h"
 #include "imagedropLabel.h"        
 #include <opencv2/opencv.hpp>
+#include <QFileDialog>
 #include <QDebug>
 DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::CannyEdge) {
@@ -24,6 +25,7 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	ui->apertureLabel->setVisible(false);
 	ui->applyCannyFilterButton->setVisible(false);
 	ui->dragAndDrop->setGrayscaleOnly(false);
+	ui->savedButton->setVisible(false);
 	connect(ui->dragAndDrop, &ImageDropLabel::imageDropped,
 		this, [this](const QImage& img) {
 			originalImage = img;
@@ -34,6 +36,7 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	connect(ui->applyCannyFilterButton, &QPushButton::clicked, this, &DragDropCannyEdge::onApplyCannyClicked);
 	connect(ui->lowerTslider, &QSlider::valueChanged,this, &DragDropCannyEdge::onSliderChanged);
 	connect(ui->higherTslider, &QSlider::valueChanged,this, &DragDropCannyEdge::onSliderChanged);
+	connect(ui->savedButton, &QPushButton::clicked, this, &DragDropCannyEdge::saveImage);
 }
 
 DragDropCannyEdge::~DragDropCannyEdge() {
@@ -45,14 +48,15 @@ void DragDropCannyEdge::resizeEvent(QResizeEvent* event) {
 }
 
 void DragDropCannyEdge::repositionWidgets() {
-	int Width = centralWidget()->width();
-	int Height = centralWidget()->height();
+	int Width = this->width();
+	int Height = this->height();
+
+	if (Width < 200 || Height < 200) return;
 
 	int marginX = Width * 0.04;
 	int marginY = Height * 0.05;
 
 	int titleH = Height * 0.07;
-
 	int usableW = Width - 2 * marginX;
 	int usableH = Height - titleH - marginY * 2;
 
@@ -60,9 +64,6 @@ void DragDropCannyEdge::repositionWidgets() {
 	int column2 = usableW * 0.42;
 	int column3 = usableW * 0.28;
 	int gap = Width * 0.015;
-
-	ui->titleLabelCanny->setGeometry(column2, marginY * 0.3, Width - 2 * marginX, titleH);
-	ui->infoLabel->setGeometry(column2, marginY, Width - 2 * marginX, titleH);
 
 	int c1 = marginX;
 	int c2 = c1 + column1 + gap;
@@ -72,62 +73,47 @@ void DragDropCannyEdge::repositionWidgets() {
 	int dropH = usableH * 0.78;
 	int btnH = usableH * 0.08;
 
-	// Drop zone — centre
+	// Titre centré
+	ui->titleLabelCanny->setGeometry(c2 + marginX, marginY * 0.3, usableW, titleH);
+	ui->titleLabelCanny->setAlignment(Qt::AlignCenter);
+	ui->infoLabel->setGeometry(0, marginY * 0.3 + titleH, usableW, titleH * 0.6);
+	ui->infoLabel->setAlignment(Qt::AlignCenter);
+
+	// Drop zone et result
 	ui->dragAndDrop->setGeometry(c2, rowY, column2, dropH);
-	ui->resultCannyLabel->setGeometry(c3, rowY, column3+marginX, dropH - marginY);
+	ui->resultCannyLabel->setGeometry(c3, rowY, column3, dropH);
+
+	// 3 boutons même taille en bas
+	int totalBtnW = c3 + column3 - c1;  
+	int btnW = (totalBtnW - 2 * gap) / 3;
+	int btnY = rowY + dropH + gap;
 
 	if (resizeBouton) {
-		ui->cannyFilterButton->setGeometry(
-			column2,
-			rowY + dropH + gap,
-			column1,
-			btnH
-		);
+		ui->cannyFilterButton->setGeometry(c1 + btnW + gap, btnY, btnW, btnH);
+		ui->applyCannyFilterButton->setVisible(false);
+		ui->savedButton->setVisible(false);
 	}
-	ui->applyCannyFilterButton->setGeometry(
-		column2,
-		rowY + dropH + gap,
-		column1, btnH
-	);
-	//dynamique en fonction du bouton Apply
-	if (!resizeBouton) {
-		ui->cannyFilterButton->setGeometry(
-			ui->applyCannyFilterButton->x() + ui->applyCannyFilterButton->width() + 10,
-			ui->applyCannyFilterButton->y(),
-			ui->cannyFilterButton->width(),
-			ui->applyCannyFilterButton->height()
-		);
+	else {
+		ui->applyCannyFilterButton->setGeometry(c1, btnY, btnW, btnH);
+		ui->cannyFilterButton->setGeometry(c1 + btnW + gap, btnY, btnW, btnH);
+		ui->savedButton->setGeometry(c1 + (btnW + gap) * 2, btnY, btnW, btnH);
 	}
-	int ctrlTop = rowY;
-	int step = dropH / 7;
 
-	ui->lowerTlabel->setGeometry(c1, ctrlTop + step * 0, column1, btnH);
-	ui->lowerTslider->setGeometry(c1, ctrlTop + step * 1, column1, btnH);
-	ui->higherTlabel->setGeometry(c1, ctrlTop + step * 2, column1, btnH);
-	ui->higherTslider->setGeometry(c1, ctrlTop + step * 3, column1, btnH);
-	ui->apertureLabel->setGeometry(c1, ctrlTop + step * 4, column1, btnH);
-	ui->apertureBox->setGeometry(c1, ctrlTop + step * 5, column1, btnH);
+	int step = dropH / 7;
+	ui->lowerTlabel->setGeometry(c1, rowY + step * 0, column1, btnH);
+	ui->lowerTslider->setGeometry(c1, rowY + step * 1, column1, btnH);
+	ui->higherTlabel->setGeometry(c1, rowY + step * 2, column1, btnH);
+	ui->higherTslider->setGeometry(c1, rowY + step * 3, column1, btnH);
+	ui->apertureLabel->setGeometry(c1, rowY + step * 4, column1, btnH);
+	ui->apertureBox->setGeometry(c1, rowY + step * 5, column1, btnH);
 }
 
 
 void DragDropCannyEdge::showCannyInterface() {
 	if (ui->cannyFilterButton->text() == "Canny Edge Filter") {
 			cannyOp->showInterface();
-			//Premiere Positionnement du bouton "Back" à droite du bouton "Apply"
-			int x = ui->applyCannyFilterButton->x();
-			int y = ui->applyCannyFilterButton->y();
-			int h = ui->applyCannyFilterButton->height();
-			int gap = 10;
-
-			int labelW = ui->applyCannyFilterButton->width();
-			int btnW = ui->cannyFilterButton->width();
-			ui->cannyFilterButton->setGeometry(
-				x + labelW + gap,
-				y,
-				btnW,
-				h
-			);
 			resizeBouton = false;
+			repositionWidgets();
 	}
 	else {
 		cannyOp->hideInterface();
@@ -135,7 +121,18 @@ void DragDropCannyEdge::showCannyInterface() {
 		repositionWidgets();
 	}
 }
-
+void DragDropCannyEdge::saveImage() {
+	QPixmap pix = ui->resultCannyLabel->pixmap(Qt::ReturnByValue);
+	if (!pix.isNull()) {
+		QString fileName = QFileDialog::getSaveFileName(
+			this, "Save Image", "",
+			"PNG Image (*.png);;JPEG Image (*.jpg)"
+		);
+		if (!fileName.isEmpty()) {
+			pix.save(fileName);
+		}
+	}
+}
 
 cv::Mat QImageToMatCanny(const QImage& img) {
 	QImage gray = img.convertToFormat(QImage::Format_Grayscale8);

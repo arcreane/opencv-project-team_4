@@ -17,6 +17,7 @@ public:
     ~DragAndDropWindow();
     void resizeEvent(QResizeEvent* event) override;
     void repositionWidgets();
+    void saveImage();
 
 private slots:
     void createErosionInterface();

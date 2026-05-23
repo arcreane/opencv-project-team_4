@@ -33,6 +33,37 @@
     </size>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0">
+     <widget class="QPushButton" name="detectObjectDeep">
+      <property name="maximumSize">
+       <size>
+        <width>350</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Detect Object</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="ImageDropLabel" name="labelDropDeep">
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="text">
+       <string>Drop  your image here</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="titleDeepLearning">
       <property name="minimumSize">
@@ -58,29 +89,21 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="ImageDropLabel" name="labelDropDeep">
-      <property name="acceptDrops">
-       <bool>true</bool>
-      </property>
-      <property name="text">
-       <string>Drop  your image here</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignmentFlag::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="0">
-     <widget class="QPushButton" name="detectObjectDeep">
+    <item row="2" column="1">
+     <widget class="QPushButton" name="savedButton">
       <property name="maximumSize">
        <size>
         <width>350</width>
         <height>50</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>Detect Object</string>
+       <string>Save</string>
       </property>
      </widget>
     </item>

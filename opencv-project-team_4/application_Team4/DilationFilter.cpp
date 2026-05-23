@@ -44,10 +44,14 @@ void DilationOperation::hideInterface() {
     ui->applyButton->setVisible(false);
 	ui->DilationFilter->setText("Dilation Filter");
     ui->LabelTitle->setText("MORPHOLOGY");
+    ui->resultLabel->clear();
+    ui->label->clear();
+    ui->savedButton->setVisible(false);
 
 }
 
 cv::Mat DilationOperation::applyDilation(const cv::Mat& inputImage) {
+    ui->savedButton->setVisible(true);
 
     int dilationType = 0;
     if (ui->rectMorph->isChecked()) {

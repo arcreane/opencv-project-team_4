@@ -44,10 +44,14 @@ void OpeningOperation::hideInterface() {
     ui->applyButton->setVisible(false);
 	ui->OpeningFilter->setText("Opening Filter");
     ui->LabelTitle->setText("MORPHOLOGY");
+	ui->resultLabel->clear();
+	ui->label->clear();
+	ui->savedButton->setVisible(false);
 
 }
 
 cv::Mat OpeningOperation::applyOpening(const cv::Mat& inputImage) {
+    ui->savedButton->setVisible(true);
 
     int openingType = 0;
     if (ui->rectMorph->isChecked()) {

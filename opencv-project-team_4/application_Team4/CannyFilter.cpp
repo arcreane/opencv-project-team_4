@@ -32,6 +32,7 @@ void CannyOperation::hideInterface() {
     ui->dragAndDrop->setStyleSheet("border: 2px dashed gray;");
     ui->applyCannyFilterButton->setVisible(false);
 	ui->cannyFilterButton->setText("Canny Edge Filter");
+	ui->savedButton->setVisible(false);
 }
 
 cv::Mat CannyOperation::applyCannyEdgeFilter(const cv::Mat& inputImage) {
@@ -46,6 +47,7 @@ cv::Mat CannyOperation::applyCannyEdgeFilter(const cv::Mat& inputImage) {
     else{
         cv::Canny(inputImage, outputImage, lowerThreshold, higherThreshold);
     }
+    ui->savedButton->setVisible(true);
 
     return outputImage;
 }
