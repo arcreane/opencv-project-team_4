@@ -26,6 +26,10 @@ void CannyOperation::hideInterface() {
     ui->higherTslider->setVisible(false);
     ui->lowerTlabel->setVisible(false);
     ui->higherTlabel->setVisible(false);
+	ui->resultCannyLabel->setVisible(false);
+    ui->dragAndDrop->clear();
+    ui->dragAndDrop->setText("Drop  your image here");
+    ui->dragAndDrop->setStyleSheet("border: 2px dashed gray;");
     ui->applyCannyFilterButton->setVisible(false);
 	ui->cannyFilterButton->setText("Canny Edge Filter");
 }

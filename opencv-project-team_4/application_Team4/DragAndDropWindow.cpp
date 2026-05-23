@@ -57,8 +57,8 @@ void DragAndDropWindow::resizeEvent(QResizeEvent* event) {
 }
 
 void DragAndDropWindow::repositionWidgets() {
-	int Width = centralWidget()->width();
-	int Height = centralWidget()->height();
+	int Width = this->width();
+	int Height = this->height();
 
 	int marginX = Width * 0.08;   // marge horizontale
 	int marginY = Height * 0.08;   // marge verticale haute

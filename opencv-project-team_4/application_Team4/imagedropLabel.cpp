@@ -2,7 +2,7 @@
 #include <qfileinfo.h>
 #include <QMimeData>
 #include <QPixmap>
-
+#include <QTimer>
 ImageDropLabel::ImageDropLabel(QWidget* parent) : QLabel(parent) {
     setAcceptDrops(true);
     setAlignment(Qt::AlignCenter);
@@ -31,11 +31,26 @@ void ImageDropLabel::dropEvent(QDropEvent* event) {
         setStyleSheet("border: 2px dashed red; color: red;");
         return;
     }
+    QPoint savedPos = pos();  // sauvegarder position
+    QSize  savedSize = size();
 
-    setStyleSheet("border: none;");
-    setPixmap(QPixmap::fromImage(image).scaled(
-        size(), Qt::KeepAspectRatio, Qt::SmoothTransformation
-    ));
+    if (m_fixPosition) {
+        setStyleSheet("border: 2px dashed gray;");
+
+        setPixmap(QPixmap::fromImage(image).scaled(
+            savedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation
+        ));
+        QTimer::singleShot(0, this, [this, savedPos, savedSize]() {
+            move(savedPos);
+            resize(savedSize);
+            });
+    }
+    else {
+        setPixmap(QPixmap::fromImage(image).scaled(
+            size(), Qt::KeepAspectRatio, Qt::SmoothTransformation
+        ));
+    }
+
     emit imageDropped(image);
 }
 

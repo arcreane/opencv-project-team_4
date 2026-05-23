@@ -12,6 +12,8 @@ class DeepLearningWindow : public QMainWindow {
 public:
     explicit DeepLearningWindow(QWidget* parent = nullptr);
     ~DeepLearningWindow();
+	void resizeEvent(QResizeEvent* event) override;
+	void repositionWidgets();
 
 private slots:
     void deepLearningapply();

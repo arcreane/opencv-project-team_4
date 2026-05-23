@@ -73,7 +73,7 @@ void DragDropCannyEdge::repositionWidgets() {
 	int btnH = usableH * 0.08;
 
 	// Drop zone — centre
-	ui->dragAndDrop->setGeometry(c2+marginX, rowY, column2, dropH);
+	ui->dragAndDrop->setGeometry(c2, rowY, column2, dropH);
 	ui->resultCannyLabel->setGeometry(c3, rowY, column3+marginX, dropH - marginY);
 
 	if (resizeBouton) {

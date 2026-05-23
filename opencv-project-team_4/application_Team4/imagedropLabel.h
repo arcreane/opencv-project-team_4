@@ -11,7 +11,7 @@ class ImageDropLabel : public QLabel {
 public:
     explicit ImageDropLabel(QWidget* parent = nullptr);
     void setGrayscaleOnly(bool grayscaleOnly) { m_grayscaleOnly = grayscaleOnly; }
-
+    void setFixPosition(bool fix) { m_fixPosition = fix; }
 
 protected:
     void dragEnterEvent(QDragEnterEvent* event) override;
@@ -20,6 +20,8 @@ signals:
     void imageDropped(const QImage& image);
 private:
     bool m_grayscaleOnly = true; 
+    bool m_fixPosition = false;
+
 };
 
 #endif

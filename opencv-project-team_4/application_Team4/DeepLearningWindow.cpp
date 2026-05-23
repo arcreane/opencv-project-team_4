@@ -2,7 +2,7 @@
 #include "ui_DeepLearningWindow.h"
 #include <QDebug>
 #include <QDir>
-
+#include <QTimer>
 #include "imagedropLabel.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/dnn.hpp>
@@ -13,7 +13,12 @@
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::DeepLearningWindow) {
 	ui->setupUi(this);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+    centralWidget()->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+
+    resize(1000, 700);
 	ui->labelOutput->setVisible(false);
+
     qDebug() << "Working directory:" << QDir::currentPath();
 
     QString weightsPath = QDir::currentPath() + "/yolov3.weights";
@@ -38,7 +43,8 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
     qDebug() << "YOLOv3 loaded OK";
     loadClassNames(namesPath.toStdString());
     ui->labelDropDeep->setGrayscaleOnly(false);
-
+    ui->labelDropDeep->setFixPosition(true);
+    qDebug() << ui->labelDropDeep->metaObject()->className();
 	connect(ui->labelDropDeep, &ImageDropLabel::imageDropped,
 		this, [this](const QImage& img) {
 			originalImage = img;
@@ -48,6 +54,52 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	connect(ui->detectObjectDeep, &QPushButton::clicked,
 		this, &DeepLearningWindow::deepLearningapply);
 	
+}
+
+
+void DeepLearningWindow::resizeEvent(QResizeEvent* event) {
+    QMainWindow::resizeEvent(event);
+    repositionWidgets();
+}
+
+void DeepLearningWindow::repositionWidgets() {
+    int Width = this->width();   
+    int Height = this->height();
+
+    int marginX = Width * 0.04;
+    int marginY = Height * 0.05;
+    int titleWidth = ui->titleDeepLearning->width();
+    // Titre — pleine largeur
+    int titleH = Height * 0.07;
+    int usableW = Width - 2 * marginX;
+    int usableH = Height - titleH - marginY * 2;
+    // 2 colonnes égales : drop | output
+    int gap = Width * 0.02;
+    int colW = (usableW - gap) / 2;
+    int btnH = usableH * 0.08;
+    int dropH = usableH * 0.80;
+    int rowY = titleH + marginY;
+
+    int c1 = marginX;
+    int c2 = c1 + colW + gap;
+    
+    ui->titleDeepLearning->setGeometry(c2-2*c1, marginY * 0.3, titleWidth, titleH);
+    ui->titleDeepLearning->setAlignment(Qt::AlignCenter);
+
+    ui->labelDropDeep->setGeometry(c1, rowY, colW, dropH);
+    //ui->labelDropDeep->setFixedSize(colW, dropH);
+
+
+    ui->labelOutput->setGeometry(c2, rowY, colW, dropH);
+    //ui->labelOutput->setFixedSize(colW, dropH);
+
+    int totalW = colW + gap + colW;
+    int btnW = totalW * 0.30;
+    ui->detectObjectDeep->setGeometry(
+        c1 + 3.2 * marginX,
+        rowY + dropH + gap,
+        btnW, btnH
+    );
 }
 
 DeepLearningWindow::~DeepLearningWindow() {
@@ -63,6 +115,7 @@ void DeepLearningWindow::loadClassNames(const std::string& path) {
   
 void DeepLearningWindow::deepLearningapply() {
     if (originalImage.isNull() || net.empty()) return;
+	ui->detectObjectDeep->setText("Detect new object");
 
     // QImage → cv::Mat BGR
     QImage rgb = originalImage.convertToFormat(QImage::Format_RGB888);
@@ -107,11 +160,27 @@ void DeepLearningWindow::deepLearningapply() {
             }
         }
     }
-
-    // NMS
     std::vector<int> indices;
     cv::dnn::NMSBoxes(boxes, scores, confThreshold, nmsThreshold, indices);
+    if (indices.empty()) {
 
+        ui->labelOutput->setVisible(true);
+        ui->labelOutput->setText(
+            "No detection found.\nTry with another picture."
+        );
+
+        ui->labelOutput->setAlignment(Qt::AlignCenter);
+
+        ui->labelOutput->setStyleSheet(
+            "border: 2px solid red;"
+            "color: red;"
+            "font-size: 18px;"
+            "font-weight: bold;"
+            "background-color: white;"
+        );
+
+        return;
+    }
     // Dessine les résultats
     cv::Mat result = bgrMat.clone();
     for (int idx : indices) {
@@ -130,12 +199,31 @@ void DeepLearningWindow::deepLearningapply() {
     QImage qResult(rgbResult.data, rgbResult.cols, rgbResult.rows,
         rgbResult.step, QImage::Format_RGB888);
 
-    ui->labelOutput->setVisible(true);
-    ui->labelOutput->setPixmap(
-        QPixmap::fromImage(qResult.copy()).scaled(
-            ui->labelOutput->size(),
-            Qt::KeepAspectRatio,
-            Qt::SmoothTransformation
-        )
+    QRect dropGeom = ui->labelDropDeep->geometry();  // sauvegarder AVANT
+
+    ui->labelOutput->setGeometry(
+        dropGeom.x() + dropGeom.width() + (int)(this->width() * 0.02),
+        dropGeom.y(),
+        dropGeom.width(),
+        dropGeom.height()
     );
+    ui->labelOutput->setVisible(true);
+
+    QPixmap pix = QPixmap::fromImage(qResult.copy()).scaled(
+        ui->labelOutput->size(),
+        Qt::KeepAspectRatio,
+        Qt::SmoothTransformation
+    );
+    ui->labelOutput->setPixmap(pix);
+
+    // Restaurer après setPixmap
+    QTimer::singleShot(0, this, [this, dropGeom]() {
+        ui->labelDropDeep->setGeometry(dropGeom);  // remet labelDropDeep à sa place
+        ui->labelOutput->setGeometry(
+            dropGeom.x() + dropGeom.width() + (int)(this->width() * 0.02),
+            dropGeom.y(),
+            dropGeom.width(),
+            dropGeom.height()
+        );
+        });
 }
