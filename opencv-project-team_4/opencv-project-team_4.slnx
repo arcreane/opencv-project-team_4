@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="opencv-project-team_4/opencv-project-team_4.vcxproj" />
+  <Project Path="opencv-project-team_4/opencv-project-team_4.vcxproj" Id="383f0bbb-9c19-4b46-a350-974a450d9172" />
 </Solution>

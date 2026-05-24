@@ -1,5 +1,6 @@
 #pragma once
 #include <QMainWindow>
+#include "PanoramaStitching.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class StartInterface; }

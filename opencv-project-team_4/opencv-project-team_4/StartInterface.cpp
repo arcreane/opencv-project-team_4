@@ -39,8 +39,9 @@ void StartInterface::goToGeometricInterface() {
 	
 }
 void StartInterface::goToPanoramaInterface() {
-	// Implement the logic to navigate to the Panorama Stitching Interface
-	
+	PanoramaStitching* panorama = new PanoramaStitching(this);
+	panorama->show();
+	hide();
 }
 void StartInterface::goToHistogramInterface() {
 	// Implement the logic to navigate to the Histogram Interface
