@@ -1,5 +1,6 @@
 #include "StartInterface.h"
 #include "ui_StartInterface.h"
+#include "PanoramaStitching.h"
 
 
 #include <QDebug>
@@ -39,7 +40,7 @@ void StartInterface::goToGeometricInterface() {
 	
 }
 void StartInterface::goToPanoramaInterface() {
-	PanoramaStitching* panorama = new PanoramaStitching(this);
+	PanoramaStitching* panorama = new PanoramaStitching(this, nullptr);
 	panorama->show();
 	hide();
 }
