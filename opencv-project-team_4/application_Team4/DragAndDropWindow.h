@@ -33,5 +33,6 @@ private:
     DilationOperation* dilationOp;
 	OpeningOperation* openingOp;
 	ClosingOperation* closingOp;
+	void applyStyles();
 
 };

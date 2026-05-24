@@ -9,17 +9,21 @@
 #include <fstream>   
 #include <string> 
 #include <QFileDialog>
-
+#include <QMessageBox>
+#include <QApplication>
 
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::DeepLearningWindow) {
 	ui->setupUi(this);
+	applyStyles();
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     centralWidget()->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
     resize(1000, 700);
 	ui->labelOutput->setVisible(false);
-
+    ui->labelDropDeep->setGrayscaleOnly(false);
+    ui->labelDropDeep->setFixPosition(true);
+    ui->savedButton->setVisible(false);
     qDebug() << "Working directory:" << QDir::currentPath();
 
     QString weightsPath = QDir::currentPath() + "/yolov3.weights";
@@ -33,19 +37,25 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 
     if (!QFile::exists(weightsPath) || !QFile::exists(cfgPath)) {
         qDebug() << "ERROR: model files missing — copy them to the folder above";
+		ui->labelDropDeep->setStyleSheet("border: 2px dashed red; color: red;");
+        ui->labelDropDeep->setText(
+            "Model files not found. Alert the team."
+		);
         return;
     }
 
     net = cv::dnn::readNet(weightsPath.toStdString(), cfgPath.toStdString());
     if (net.empty()) {
         qDebug() << "ERROR: model failed to load";
+        ui->labelDropDeep->setStyleSheet("border: 2px dashed red; color: red;");
+        ui->labelDropDeep->setText(
+            "Model files not found. Alert the team."
+        );
         return;
     }
     qDebug() << "YOLOv3 loaded OK";
     loadClassNames(namesPath.toStdString());
-    ui->labelDropDeep->setGrayscaleOnly(false);
-    ui->labelDropDeep->setFixPosition(true);
-	ui->savedButton->setVisible(false);
+
     qDebug() << ui->labelDropDeep->metaObject()->className();
 	connect(ui->labelDropDeep, &ImageDropLabel::imageDropped,
 		this, [this](const QImage& img) {
@@ -95,12 +105,11 @@ void DeepLearningWindow::repositionWidgets() {
 
     ui->labelOutput->setGeometry(c2, rowY, colW, dropH);
     //ui->labelOutput->setFixedSize(colW, dropH);
-    int totalBtnW = c2 + colW - c1;
-    int btnW = (totalBtnW - 2 * gap) / 3;
+    int btnW = colW;  // même largeur que les labels
     int btnY = rowY + dropH + gap;
 
-    ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);
-    ui->savedButton->setGeometry(c2 + btnW, btnY, btnW, btnH);
+    ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);  // aligné sous labelDropDeep
+    ui->savedButton->setGeometry(c2, btnY, btnW, btnH);
 }
 void DeepLearningWindow::saveImage() {
     QPixmap pix = ui->labelOutput->pixmap(Qt::ReturnByValue);
@@ -126,10 +135,15 @@ void DeepLearningWindow::loadClassNames(const std::string& path) {
 }
   
 void DeepLearningWindow::deepLearningapply() {
+    ui->labelOutput->setVisible(false);
+    ui->labelOutput->clear();
+    ui->labelOutput->setText("");
+    ui->labelOutput->setStyleSheet("");
     if (originalImage.isNull() || net.empty()) return;
-	ui->detectObjectDeep->setText("Detect new object");
+	ui->detectObjectDeep->setEnabled(false);
+	ui->detectObjectDeep->setText("Charging....");
 	ui->savedButton->setVisible(true);
-	repositionWidgets();
+    QApplication::processEvents();
     // QImage → cv::Mat BGR
     QImage rgb = originalImage.convertToFormat(QImage::Format_RGB888);
     cv::Mat imgMat(rgb.height(), rgb.width(), CV_8UC3,
@@ -146,7 +160,10 @@ void DeepLearningWindow::deepLearningapply() {
     std::vector<std::string> outLayerNames = net.getUnconnectedOutLayersNames();
     std::vector<cv::Mat> outputs;
     net.forward(outputs, outLayerNames);
-
+    ui->detectObjectDeep->setEnabled(true);
+    ui->detectObjectDeep->setText("Detect new object");
+    ui->savedButton->setVisible(true);
+    repositionWidgets();
     // Parse les détections
     std::vector<cv::Rect> boxes;
     std::vector<float>    scores;
@@ -173,12 +190,13 @@ void DeepLearningWindow::deepLearningapply() {
             }
         }
     }
+    QRect dropGeom = ui->labelDropDeep->geometry();
+
     std::vector<int> indices;
     cv::dnn::NMSBoxes(boxes, scores, confThreshold, nmsThreshold, indices);
     if (indices.empty()) {
 
         ui->labelOutput->setVisible(true);
-        ui->labelOutput->setStyleSheet("border: 2px dashed gray;");
         ui->labelOutput->setText(
             "No detection found.\nTry with another picture."
         );
@@ -192,6 +210,13 @@ void DeepLearningWindow::deepLearningapply() {
             "font-weight: bold;"
             "background-color: white;"
         );
+        ui->labelOutput->setGeometry(
+            dropGeom.x() + dropGeom.width() + (int)(this->width() * 0.02),
+            dropGeom.y(),
+            dropGeom.width() + (int)(this->width() * 0.02),
+            dropGeom.height()
+		); repositionWidgets();
+        
 
         return;
     }
@@ -213,12 +238,11 @@ void DeepLearningWindow::deepLearningapply() {
     QImage qResult(rgbResult.data, rgbResult.cols, rgbResult.rows,
         rgbResult.step, QImage::Format_RGB888);
 
-    QRect dropGeom = ui->labelDropDeep->geometry();  // sauvegarder AVANT
 
     ui->labelOutput->setGeometry(
         dropGeom.x() + dropGeom.width() + (int)(this->width() * 0.02),
         dropGeom.y(),
-        dropGeom.width(),
+        dropGeom.width() + (int)(this->width() * 0.02),
         dropGeom.height()
     );
     ui->labelOutput->setVisible(true);
@@ -240,4 +264,170 @@ void DeepLearningWindow::deepLearningapply() {
             dropGeom.height()
         );
         });
+}
+void DeepLearningWindow::applyStyles() {
+    setStyleSheet(R"(
+
+/* ── Window & surfaces ───────────────────────────────── */
+QMainWindow {
+    background-color: #0d0d1c;
+}
+QWidget#centralwidget {
+    background-color: #0d0d1c;
+}
+
+/* ── Title label ─────────────────────────────────────── */
+QLabel#titleDeepLearning {
+    color: #d0d0ff;
+    font-family: 'Segoe UI';
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    background: transparent;
+}
+
+/* ── Drop label ──────────────────────────────────────── */
+QLabel#labelDropDeep {
+    background-color: #07070f;
+    border: 2px dashed #252558;
+    border-radius: 10px;
+    color: #40406a;
+    font-family: 'Segoe UI';
+    font-size: 16px;
+}
+QLabel#labelDropDeep:hover {
+    border-color: #4848a8;
+    background-color: #0a0a18;
+}
+
+/* ── Output label ────────────────────────────────────── */
+QLabel#labelOutput {
+    background-color: #07070f;
+    border: 1px solid #1a1a38;
+    border-radius: 10px;
+    color: #30304c;
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+/* ── Buttons – base ──────────────────────────────────── */
+QPushButton {
+    background-color: #16162e;
+    color: #b0b0d0;
+    border: 1px solid #26264c;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    font-weight: 500;
+}
+QPushButton:hover {
+    background-color: #20204a;
+    border-color: #3c3c8a;
+    color: #dcdcff;
+}
+QPushButton:pressed {
+    background-color: #0c0c20;
+    border-color: #5858b0;
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+QPushButton:disabled {
+    background-color: #0c0c18;
+    border-color: #141428;
+    color: #303050;
+}
+
+/* ── Detect button – gradient accent ─────────────────── */
+QPushButton#detectObjectDeep {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #3838e8, stop:1 #8820d8);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Segoe UI';
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+QPushButton#detectObjectDeep:hover {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #5050ff, stop:1 #a030f0);
+}
+QPushButton#detectObjectDeep:pressed {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #2828c0, stop:1 #6818b0);
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+QPushButton#detectObjectDeep:disabled {
+    background: #141428;
+    color: #303050;
+}
+
+/* ── Save button – blue accent ───────────────────────── */
+QPushButton#savedButton {
+    background-color: #0a1828;
+    border-color: #183868;
+    color: #4898d0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton#savedButton:hover {
+    background-color: #101e32;
+    border-color: #285898;
+    color: #68b8f0;
+}
+QPushButton#savedButton:pressed {
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+
+/* ── Scrollbars ──────────────────────────────────────── */
+QScrollBar:vertical {
+    background: #07070f;
+    width: 6px;
+    margin: 0;
+    border-radius: 3px;
+}
+QScrollBar::handle:vertical {
+    background: #252558;
+    border-radius: 3px;
+    min-height: 20px;
+}
+QScrollBar::handle:vertical:hover { background: #3838a0; }
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical { height: 0; }
+
+QScrollBar:horizontal {
+    background: #07070f;
+    height: 6px;
+    border-radius: 3px;
+}
+QScrollBar::handle:horizontal {
+    background: #252558;
+    border-radius: 3px;
+}
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal { width: 0; }
+
+/* ── Menu / status bars ──────────────────────────────── */
+QMenuBar {
+    background-color: #08080f;
+    color: #606090;
+    border-bottom: 1px solid #14142a;
+}
+QMenuBar::item:selected {
+    background-color: #1a1a38;
+    color: #c0c0e0;
+}
+QStatusBar {
+    background-color: #08080f;
+    color: #404070;
+    border-top: 1px solid #14142a;
+    font-size: 11px;
+}
+
+)");
 }

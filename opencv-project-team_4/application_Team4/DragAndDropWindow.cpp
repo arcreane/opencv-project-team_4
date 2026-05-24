@@ -9,6 +9,7 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::Morphology) {
 
 	ui->setupUi(this);
+	applyStyles();
 	resize(1000, 700);  // taille de départ raisonnable
 
 	// Retirer le layout du .ui pour reprendre le contrôle
@@ -206,4 +207,102 @@ void DragAndDropWindow::applyCurrentFilter() {
 		Qt::SmoothTransformation
 	);
 	ui->resultLabel->setPixmap(pix);
+}
+void DragAndDropWindow::applyStyles() {
+	setStyleSheet(R"(
+QMainWindow { background-color: #0d0d1c; }
+QWidget#centralwidget { background-color: #0d0d1c; }
+
+QLabel#LabelTitle {
+    color: #d0d0ff; font-family: 'Segoe UI'; font-size: 20px;
+    font-weight: bold; letter-spacing: 3px; background: transparent;
+}
+QLabel#label {
+    background-color: #07070f; border: 2px dashed #252558;
+    border-radius: 10px; color: #40406a;
+    font-family: 'Segoe UI'; font-size: 16px;
+}
+QLabel#label:hover { border-color: #4848a8; background-color: #0a0a18; }
+
+QLabel#resultLabel {
+    background-color: #07070f; border: 1px solid #1a1a38;
+    border-radius: 10px; color: #30304c;
+    font-family: 'Segoe UI'; font-size: 14px;
+}
+
+QLabel#kernelSizeLabel, QLabel#iterationLabel,
+QLabel#erosionTypeLabel {
+    color: #8888aa; font-family: 'Segoe UI';
+    font-size: 16px; background: transparent;
+}
+
+QSpinBox#kernelSizeBox, QSpinBox#iterationNumberBox {
+    background-color: #0a0a1c; border: 1px solid #252550;
+    border-radius: 6px; color: #c0c0e0;
+    padding: 3px 8px; font-family: 'Segoe UI'; font-size: 12px;
+}
+QSpinBox#kernelSizeBox:hover, QSpinBox#iterationNumberBox:hover {
+    border-color: #4848a8;
+}
+
+QRadioButton#rectMorph, QRadioButton#ellipseMorph, QRadioButton#crossMorph {
+    color: #a0a0c8; font-family: 'Segoe UI'; font-size: 16px;
+    background: transparent;
+}
+QRadioButton::indicator {
+    width: 14px; height: 14px; border-radius: 7px;
+    border: 2px solid #252558; background: #07070f;
+}
+QRadioButton::indicator:checked { background: #5050c8; border-color: #8080e8; }
+
+QPushButton {
+    background-color: #16162e; color: #b0b0d0;
+    border: 1px solid #26264c; border-radius: 8px;
+    padding: 6px 14px; font-family: 'Segoe UI';
+    font-size: 12px; font-weight: 500;
+}
+QPushButton:hover { background-color: #20204a; border-color: #3c3c8a; color: #dcdcff; }
+QPushButton:pressed { background-color: #0c0c20; border-color: #5858b0; }
+QPushButton:disabled { background-color: #0c0c18; border-color: #141428; color: #303050; }
+
+QPushButton#ErosionFilter, QPushButton#DilationFilter, QPushButton#OpeningFilter, QPushButton#ClosingFilter {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #3838e8, stop:1 #8820d8);
+    color: #ffffff; border: none; border-radius: 10px;
+    font-size: 17px; font-weight: bold;
+}
+QPushButton#ErosionFilter:hover, QPushButton#DilationFilter:hover, QPushButton#OpeningFilter:hover, QPushButton#ClosingFilter:hover {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #5050ff, stop:1 #a030f0);
+}
+QPushButton#ErosionFilter:disabled, QPushButton#DilationFilter:disabled, QPushButton#OpeningFilter:disabled,QPushButton#ClosingFilter:disabled {
+    background: #141428; color: #303050;
+}
+
+QPushButton#applyButton {
+    background-color: #0a2518; border-color: #185a35;
+    color: #48c880; border-radius: 10px;
+    font-size: 13px; font-weight: bold;
+}
+QPushButton#applyButton:hover {
+    background-color: #103020; border-color: #287a50; color: #68e8a0;
+}
+
+QPushButton#savedButton {
+    background-color: #0a1828; border-color: #183868;
+    color: #4898d0; border-radius: 10px;
+    font-size: 13px; font-weight: bold;
+}
+QPushButton#savedButton:hover {
+    background-color: #101e32; border-color: #285898; color: #68b8f0;
+}
+
+QScrollBar:vertical { background: #07070f; width: 6px; border-radius: 3px; }
+QScrollBar::handle:vertical { background: #252558; border-radius: 3px; min-height: 20px; }
+QScrollBar::handle:vertical:hover { background: #3838a0; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+QScrollBar:horizontal { background: #07070f; height: 6px; border-radius: 3px; }
+QScrollBar::handle:horizontal { background: #252558; border-radius: 3px; }
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
+)");
 }

@@ -23,4 +23,6 @@ private:
     cv::dnn::Net net;
     std::vector<std::string> classNames;
     void loadClassNames(const std::string& path);
+    void applyStyles();
+
  }; 

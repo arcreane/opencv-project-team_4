@@ -29,5 +29,7 @@ private:
     cv::Mat inputImage;
     bool cannyAppliedOnce = false;
 	bool resizeBouton = true;
+    void applyStyles();
+
    
 }; 
