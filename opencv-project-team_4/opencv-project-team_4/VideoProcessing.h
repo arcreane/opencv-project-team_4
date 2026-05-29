@@ -1,5 +1,6 @@
 #pragma once
 #include <QMainWindow>
+#include <QLabel>
 #include <QTimer>
 #include <vector>
 #include <opencv2/core.hpp>
