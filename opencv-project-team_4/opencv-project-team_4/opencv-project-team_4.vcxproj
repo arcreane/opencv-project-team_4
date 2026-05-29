@@ -169,15 +169,18 @@
   <ItemGroup>
     <None Include="StartInterface.ui" />
     <QtUic Include="PanoramaStitching.ui" />
+    <None Include="VideoProcessing.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="StartInterface.h" />
     <QtMoc Include="PanoramaStitching.h" />
+    <QtMoc Include="VideoProcessing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="StartInterface.cpp" />
     <ClCompile Include="PanoramaStitching.cpp" />
+    <ClCompile Include="VideoProcessing.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="$(QtMsBuild)\qt.targets" Condition="Exists('$(QtMsBuild)\qt.targets')" />

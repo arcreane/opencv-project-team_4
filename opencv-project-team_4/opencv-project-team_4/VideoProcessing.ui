@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>VideoProcessing</class>
+ <widget class="QMainWindow" name="VideoProcessing">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>1280</width><height>800</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Video Processing</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="mainLayout">
+    <property name="spacing"><number>0</number></property>
+    <property name="leftMargin"><number>0</number></property>
+    <property name="topMargin"><number>0</number></property>
+    <property name="rightMargin"><number>0</number></property>
+    <property name="bottomMargin"><number>0</number></property>
+
+    <!-- Header -->
+    <item>
+     <widget class="QFrame" name="headerFrame">
+      <property name="minimumHeight"><number>68</number></property>
+      <property name="maximumHeight"><number>68</number></property>
+      <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
+      <layout class="QVBoxLayout" name="headerLayout">
+       <property name="leftMargin"><number>18</number></property>
+       <property name="topMargin"><number>10</number></property>
+       <property name="rightMargin"><number>18</number></property>
+       <property name="bottomMargin"><number>8</number></property>
+       <property name="spacing"><number>2</number></property>
+       <item>
+        <widget class="QLabel" name="titleLabel">
+         <property name="text"><string>VIDEO PROCESSING</string></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="subtitleLabel">
+         <property name="text"><string>Traitement et analyse de vidéos avec OpenCV</string></property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+    <!-- Tab widget -->
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex"><number>0</number></property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>1</verstretch>
+       </sizepolicy>
+      </property>
+
+      <!-- ── Tab 1 : Per-Frame Filter ───────────────────────── -->
+      <widget class="QWidget" name="filterTab">
+       <attribute name="title"><string>Filtre par Frame</string></attribute>
+       <layout class="QVBoxLayout" name="filterTabLayout">
+        <property name="spacing"><number>10</number></property>
+        <property name="leftMargin"><number>14</number></property>
+        <property name="topMargin"><number>12</number></property>
+        <property name="rightMargin"><number>14</number></property>
+        <property name="bottomMargin"><number>12</number></property>
+
+        <!-- Controls row -->
+        <item>
+         <layout class="QHBoxLayout" name="filterControlsLayout">
+          <property name="spacing"><number>8</number></property>
+          <item>
+           <widget class="QPushButton" name="loadFilterButton">
+            <property name="text"><string>Charger Vidéo</string></property>
+            <property name="minimumHeight"><number>36</number></property>
+            <property name="minimumWidth"><number>140</number></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="filterLabel">
+            <property name="text"><string>Filtre :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="filterCombo">
+            <property name="minimumWidth"><number>150</number></property>
+            <property name="minimumHeight"><number>36</number></property>
+            <item><property name="text"><string>Aucun</string></property></item>
+            <item><property name="text"><string>Grayscale</string></property></item>
+            <item><property name="text"><string>Blur</string></property></item>
+            <item><property name="text"><string>Canny Edge</string></property></item>
+            <item><property name="text"><string>Sepia</string></property></item>
+            <item><property name="text"><string>Invert</string></property></item>
+            <item><property name="text"><string>Sharpen</string></property></item>
+           </widget>
+          </item>
+          <item>
+           <spacer name="filterControlsSpacer">
+            <property name="orientation"><enum>Qt::Orientation::Horizontal</enum></property>
+            <property name="sizeType"><enum>QSizePolicy::Policy::Expanding</enum></property>
+            <property name="sizeHint" stdset="0">
+             <size><width>40</width><height>20</height></size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="exportFilterButton">
+            <property name="text"><string>Exporter</string></property>
+            <property name="minimumHeight"><number>36</number></property>
+            <property name="minimumWidth"><number>120</number></property>
+            <property name="enabled"><bool>false</bool></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- Preview label -->
+        <item>
+         <widget class="QLabel" name="filterPreviewLabel">
+          <property name="text"><string>Chargez une vidéo pour commencer</string></property>
+          <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>1</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+
+        <!-- Slider row -->
+        <item>
+         <layout class="QHBoxLayout" name="filterSliderLayout">
+          <property name="spacing"><number>8</number></property>
+          <item>
+           <widget class="QLabel" name="frameLabel">
+            <property name="text"><string>Frame :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSlider" name="filterSlider">
+            <property name="orientation"><enum>Qt::Orientation::Horizontal</enum></property>
+            <property name="minimum"><number>0</number></property>
+            <property name="maximum"><number>0</number></property>
+            <property name="value"><number>0</number></property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>1</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="frameCountLabel">
+            <property name="text"><string>0 / 0</string></property>
+            <property name="minimumWidth"><number>80</number></property>
+            <property name="alignment"><set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignVCenter</set></property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+
+        <!-- Progress bar -->
+        <item>
+         <widget class="QProgressBar" name="filterProgressBar">
+          <property name="minimum"><number>0</number></property>
+          <property name="maximum"><number>100</number></property>
+          <property name="value"><number>0</number></property>
+          <property name="minimumHeight"><number>18</number></property>
+          <property name="visible"><bool>false</bool></property>
+         </widget>
+        </item>
+
+       </layout>
+      </widget>
+
+      <!-- ── Tab 2 : Optical Flow ───────────────────────────── -->
+      <widget class="QWidget" name="opticalFlowTab">
+       <attribute name="title"><string>Optical Flow</string></attribute>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QLabel" name="opticalFlowPlaceholder">
+          <property name="text"><string>À venir — Optical Flow</string></property>
+          <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+      <!-- ── Tab 3 : Motion Recording ──────────────────────── -->
+      <widget class="QWidget" name="motionTab">
+       <attribute name="title"><string>Enregistrement Mouvement</string></attribute>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QLabel" name="motionPlaceholder">
+          <property name="text"><string>À venir — Motion-Triggered Recording</string></property>
+          <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+      <!-- ── Tab 4 : Time-lapse / Slow-motion ─────────────── -->
+      <widget class="QWidget" name="timelapseTab">
+       <attribute name="title"><string>Time-lapse / Slow-mo</string></attribute>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QLabel" name="timelapsePlaceholder">
+          <property name="text"><string>À venir — Time-lapse &amp; Slow-motion</string></property>
+          <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+      <!-- ── Tab 5 : Stabilisation ─────────────────────────── -->
+      <widget class="QWidget" name="stabilizationTab">
+       <attribute name="title"><string>Stabilisation</string></attribute>
+       <layout class="QVBoxLayout">
+        <item>
+         <widget class="QLabel" name="stabilizationPlaceholder">
+          <property name="text"><string>À venir — Video Stabilization</string></property>
+          <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+
+     </widget>
+    </item>
+
+    <!-- Footer -->
+    <item>
+     <widget class="QFrame" name="footerFrame">
+      <property name="minimumHeight"><number>46</number></property>
+      <property name="maximumHeight"><number>46</number></property>
+      <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
+      <layout class="QHBoxLayout" name="footerLayout">
+       <property name="leftMargin"><number>14</number></property>
+       <property name="topMargin"><number>7</number></property>
+       <property name="rightMargin"><number>14</number></property>
+       <property name="bottomMargin"><number>7</number></property>
+       <property name="spacing"><number>8</number></property>
+       <item>
+        <widget class="QLabel" name="statusLabel">
+         <property name="text"><string>  Prêt</string></property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="backButton">
+         <property name="text"><string>Retour</string></property>
+         <property name="minimumWidth"><number>110</number></property>
+         <property name="minimumHeight"><number>32</number></property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect><x>0</x><y>0</y><width>1280</width><height>21</height></rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

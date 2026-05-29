@@ -13,10 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Video">
+      <UniqueIdentifier>{D1E2F3A4-B5C6-7D8E-9F0A-1B2C3D4E5F6A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\Video">
+      <UniqueIdentifier>{E2F3A4B5-C6D7-8E9F-0A1B-2C3D4E5F6A7B}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="StartInterface.ui">
       <Filter>Fichiers d%27en-tête</Filter>
+    </None>
+    <None Include="VideoProcessing.ui">
+      <Filter>Fichiers d%27en-tête\Video</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -26,10 +35,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="VideoProcessing.cpp">
+      <Filter>Fichiers sources\Video</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="StartInterface.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </QtMoc>
+    <QtMoc Include="VideoProcessing.h">
+      <Filter>Fichiers d%27en-tête\Video</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
