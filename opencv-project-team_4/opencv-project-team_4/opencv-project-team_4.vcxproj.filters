@@ -13,11 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\GeometricTransform">
+      <UniqueIdentifier>{A8D3F7E2-1B4C-4A9D-8E5F-0C2D3E4F5A6B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\GeometricTransform">
+      <UniqueIdentifier>{C7F2E8D3-2B5D-4BAE-9F6A-1D3E4F5A6B7C}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="StartInterface.ui">
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
+    <QtUic Include="GeometricTransform.ui">
+      <Filter>Fichiers d%27en-tête\GeometricTransform</Filter>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StartInterface.cpp">
@@ -26,10 +35,16 @@
     <ClCompile Include="main.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="GeometricTransform.cpp">
+      <Filter>Fichiers sources\GeometricTransform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="StartInterface.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </QtMoc>
+    <QtMoc Include="GeometricTransform.h">
+      <Filter>Fichiers d%27en-tête\GeometricTransform</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
