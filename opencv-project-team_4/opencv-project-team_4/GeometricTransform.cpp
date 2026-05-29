@@ -140,6 +140,13 @@ GeometricTransformWindow::GeometricTransformWindow(QWidget* startInterface, QWid
 
     applyStyles();
 
+    // Size spinboxes: native rendering (no QSS — Qt styled mode hides arrows without image files)
+    QFont spinFont("Segoe UI", 11);
+    ui->widthSpinBox->setFont(spinFont);
+    ui->heightSpinBox->setFont(spinFont);
+    ui->widthSpinBox->setMinimumHeight(32);
+    ui->heightSpinBox->setMinimumHeight(32);
+
     // Table setup
     ui->destPointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->destPointsTable->setRowHidden(3, true); // Affine starts with 3 points
@@ -487,47 +494,6 @@ QHeaderView::section {
 QTableCornerButton::section {
     background-color: #0d0d22;
     border: none;
-}
-
-/* ── SpinBox ─────────────────────────────────────────── */
-QSpinBox {
-    background-color: #0a0a1c;
-    border: 1px solid #252550;
-    border-radius: 6px;
-    color: #c0c0e0;
-    padding: 3px 6px;
-    font-family: 'Segoe UI';
-    font-size: 14px;
-    min-height: 35px;
-}
-QSpinBox:hover {
-    border-color: #4848a8;
-    background-color: #0e0e26;
-}
-QSpinBox::up-button, QSpinBox::down-button {
-    background-color: #141432;
-    border: none;
-    width: 25px;
-    height: 16px;
-}
-QSpinBox::up-button:hover, QSpinBox::down-button:hover {
-    background-color: #20204a;
-}
-QSpinBox::up-arrow {
-    image: none;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 8px solid #9090c8;
-}
-QSpinBox::down-arrow {
-    image: none;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 8px solid #9090c8;
 }
 
 /* ── ComboBox ────────────────────────────────────────── */
