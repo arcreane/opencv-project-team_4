@@ -37,11 +37,19 @@ private slots:
     void onTimelapseSliderChanged(int value);
     void onExportTimelapse();
     void onTimelapseExportTick();
+    // Tab 5 — Stabilization
+    void onLoadVideoStab();
+    void onStabilize();
+    void onStabSliderChanged(int value);
+    void onExportStab();
+    void onStabTimerTick();
+    void onStabExportTick();
     // Common
     void onBack();
 
 private:
     enum class StatusType { Info, Success, Error };
+    struct StabT { double dx = 0, dy = 0, da = 0; };
 
     Ui::VideoProcessing* ui;
     QWidget*             m_startInterface;
@@ -78,12 +86,34 @@ private:
     int              m_timelapseTotal     = 0;
     int              m_timelapseExportIdx = 0;
 
+    // ── Tab 5
+    cv::VideoCapture     m_stabCap;
+    cv::VideoWriter      m_stabWriter;
+    cv::Mat              m_stabPrevGray;
+    QTimer*              m_stabTimer       = nullptr;
+    QTimer*              m_stabExportTimer = nullptr;
+    int                  m_stabTotal       = 0;
+    int                  m_stabProcessIdx  = 0;
+    int                  m_stabExportIdx   = 0;
+    int                  m_stabPhase       = 0; // 0=idle, 1=computing, 2=ready
+    std::vector<StabT>   m_stabTransforms;
+    std::vector<StabT>   m_stabTrajectory;
+    std::vector<StabT>   m_stabSmoothed;
+
     void           applyStyles();
     void           setStatus(const QString& msg, StatusType type = StatusType::Info);
+    // Tab 1
     cv::Mat        grabFrame(int index);
-    cv::Mat        grabTimelapsFrame(int index);
+    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
+    // Tab 2
     cv::Mat        computeFarnebackFlow(const cv::Mat& prevGray, const cv::Mat& curr);
     cv::Mat        computeLucasKanadeFlow(const cv::Mat& prevGray, const cv::Mat& curr);
+    // Tab 4
+    cv::Mat        grabTimelapsFrame(int index);
+    // Tab 5
+    StabT          computeStabTransform(const cv::Mat& prev, const cv::Mat& curr);
+    void           computeTrajectoryAndSmooth();
+    cv::Mat        applyStabCorrection(const cv::Mat& frame, int idx);
+    // Shared
     static QPixmap matToPixmap(const cv::Mat& mat);
-    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
 };
