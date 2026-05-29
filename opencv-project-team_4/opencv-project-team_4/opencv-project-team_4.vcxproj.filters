@@ -24,9 +24,9 @@
     <None Include="StartInterface.ui">
       <Filter>Fichiers d%27en-tête</Filter>
     </None>
-    <None Include="VideoProcessing.ui">
+    <QtUic Include="VideoProcessing.ui">
       <Filter>Fichiers d%27en-tête\Video</Filter>
-    </None>
+    </QtUic>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StartInterface.cpp">

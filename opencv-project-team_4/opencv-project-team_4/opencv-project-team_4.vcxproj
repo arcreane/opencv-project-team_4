@@ -169,7 +169,7 @@
   <ItemGroup>
     <None Include="StartInterface.ui" />
     <QtUic Include="PanoramaStitching.ui" />
-    <None Include="VideoProcessing.ui" />
+    <QtUic Include="VideoProcessing.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="StartInterface.h" />
