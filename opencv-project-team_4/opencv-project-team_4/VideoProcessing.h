@@ -32,6 +32,11 @@ private slots:
     void onStopCam();
     void onCamTimerTick();
     void onMotionThreshChanged(int value);
+    // Tab 4 — Time-lapse / Slow-motion
+    void onLoadVideoTimelapse();
+    void onTimelapseSliderChanged(int value);
+    void onExportTimelapse();
+    void onTimelapseExportTick();
     // Common
     void onBack();
 
@@ -44,9 +49,9 @@ private:
     // ── Tab 1
     cv::VideoCapture m_filterCap;
     cv::VideoWriter  m_filterWriter;
-    QTimer*          m_exportTimer   = nullptr;
-    int              m_filterTotal   = 0;
-    int              m_exportCurrent = 0;
+    QTimer*          m_exportTimer        = nullptr;
+    int              m_filterTotal        = 0;
+    int              m_exportCurrent      = 0;
 
     // ── Tab 2
     cv::VideoCapture         m_flowCap;
@@ -61,19 +66,24 @@ private:
     cv::VideoCapture m_webcam;
     cv::VideoWriter  m_motionWriter;
     cv::Mat          m_prevFrameGray;
-    QTimer*          m_camTimer        = nullptr;
-    bool             m_recording       = false;
-    int              m_noMotionFrames  = 0;
+    QTimer*          m_camTimer           = nullptr;
+    bool             m_recording          = false;
+    int              m_noMotionFrames     = 0;
     QString          m_motionRecordPath;
+
+    // ── Tab 4
+    cv::VideoCapture m_timelapseCap;
+    cv::VideoWriter  m_timelapseWriter;
+    QTimer*          m_timelapseTimer     = nullptr;
+    int              m_timelapseTotal     = 0;
+    int              m_timelapseExportIdx = 0;
 
     void           applyStyles();
     void           setStatus(const QString& msg, StatusType type = StatusType::Info);
-    // Tab 1
     cv::Mat        grabFrame(int index);
-    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
-    // Tab 2
+    cv::Mat        grabTimelapsFrame(int index);
     cv::Mat        computeFarnebackFlow(const cv::Mat& prevGray, const cv::Mat& curr);
     cv::Mat        computeLucasKanadeFlow(const cv::Mat& prevGray, const cv::Mat& curr);
-    // Shared
     static QPixmap matToPixmap(const cv::Mat& mat);
+    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
 };
