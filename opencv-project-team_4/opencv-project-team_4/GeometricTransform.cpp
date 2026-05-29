@@ -497,7 +497,8 @@ QSpinBox {
     color: #c0c0e0;
     padding: 3px 6px;
     font-family: 'Segoe UI';
-    font-size: 12px;
+    font-size: 14px;
+    min-height: 35px;
 }
 QSpinBox:hover {
     border-color: #4848a8;
@@ -506,22 +507,27 @@ QSpinBox:hover {
 QSpinBox::up-button, QSpinBox::down-button {
     background-color: #141432;
     border: none;
-    width: 16px;
+    width: 25px;
+    height: 16px;
 }
 QSpinBox::up-button:hover, QSpinBox::down-button:hover {
     background-color: #20204a;
 }
 QSpinBox::up-arrow {
     image: none;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 5px solid #6060a0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 8px solid #9090c8;
 }
 QSpinBox::down-arrow {
     image: none;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 5px solid #6060a0;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #9090c8;
 }
 
 /* ── ComboBox ────────────────────────────────────────── */
