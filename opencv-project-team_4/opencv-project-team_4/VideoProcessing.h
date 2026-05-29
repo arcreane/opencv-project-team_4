@@ -1,6 +1,7 @@
 #pragma once
 #include <QMainWindow>
 #include <QTimer>
+#include <vector>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
 
@@ -15,10 +16,18 @@ public:
     ~VideoProcessingWindow();
 
 private slots:
+    // Tab 1 — Per-Frame Filter
     void onLoadVideoFilter();
     void onFilterSliderChanged(int value);
     void onExportFilter();
     void onExportTimerTick();
+    // Tab 2 — Optical Flow
+    void onLoadVideoFlow();
+    void onToggleFlowPlay();
+    void onFlowSpeedChanged(int value);
+    void onFlowSliderChanged(int value);
+    void onFlowTimerTick();
+    // Common
     void onBack();
 
 private:
@@ -27,16 +36,30 @@ private:
     Ui::VideoProcessing* ui;
     QWidget*             m_startInterface;
 
-    // Tab 1 — Per-Frame Filter
+    // ── Tab 1
     cv::VideoCapture m_filterCap;
     cv::VideoWriter  m_filterWriter;
     QTimer*          m_exportTimer   = nullptr;
     int              m_filterTotal   = 0;
     int              m_exportCurrent = 0;
 
+    // ── Tab 2
+    cv::VideoCapture         m_flowCap;
+    cv::Mat                  m_prevGrayFlow;
+    std::vector<cv::Point2f> m_flowPoints;
+    QTimer*                  m_flowTimer    = nullptr;
+    int                      m_flowTotal    = 0;
+    int                      m_flowFrameIdx = 0;
+    bool                     m_flowPlaying  = false;
+
     void           applyStyles();
     void           setStatus(const QString& msg, StatusType type = StatusType::Info);
+    // Tab 1
     cv::Mat        grabFrame(int index);
+    // Tab 2
+    cv::Mat        computeFarnebackFlow(const cv::Mat& prev, const cv::Mat& curr);
+    cv::Mat        computeLucasKanadeFlow(const cv::Mat& prev, const cv::Mat& curr);
+    // Shared
     static QPixmap matToPixmap(const cv::Mat& mat);
     static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
 };
