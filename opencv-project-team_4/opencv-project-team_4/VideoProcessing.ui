@@ -129,10 +129,17 @@
         <!-- Slider row -->
         <item>
          <layout class="QHBoxLayout" name="filterSliderLayout">
-          <property name="spacing"><number>8</number></property>
+          <property name="spacing"><number>6</number></property>
           <item>
            <widget class="QLabel" name="frameLabel">
             <property name="text"><string>Frame :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="prevFilterButton">
+            <property name="text"><string>&lt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -143,10 +150,16 @@
             <property name="value"><number>0</number></property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>1</horstretch>
-              <verstretch>0</verstretch>
+              <horstretch>1</horstretch><verstretch>0</verstretch>
              </sizepolicy>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="nextFilterButton">
+            <property name="text"><string>&gt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -259,10 +272,17 @@
         <!-- Slider row -->
         <item>
          <layout class="QHBoxLayout" name="flowSliderLayout">
-          <property name="spacing"><number>8</number></property>
+          <property name="spacing"><number>6</number></property>
           <item>
            <widget class="QLabel" name="flowFrameLabel">
             <property name="text"><string>Frame :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="prevFlowButton">
+            <property name="text"><string>&lt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -273,10 +293,16 @@
             <property name="value"><number>0</number></property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>1</horstretch>
-              <verstretch>0</verstretch>
+              <horstretch>1</horstretch><verstretch>0</verstretch>
              </sizepolicy>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="nextFlowButton">
+            <property name="text"><string>&gt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -479,10 +505,17 @@
         <!-- Slider row -->
         <item>
          <layout class="QHBoxLayout" name="timelapseSliderLayout">
-          <property name="spacing"><number>8</number></property>
+          <property name="spacing"><number>6</number></property>
           <item>
            <widget class="QLabel" name="timelapseFrameLabel">
             <property name="text"><string>Frame :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="prevTimelapseButton">
+            <property name="text"><string>&lt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -495,6 +528,13 @@
               <horstretch>1</horstretch><verstretch>0</verstretch>
              </sizepolicy>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="nextTimelapseButton">
+            <property name="text"><string>&gt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -627,10 +667,17 @@
         <!-- Slider row -->
         <item>
          <layout class="QHBoxLayout" name="stabSliderLayout">
-          <property name="spacing"><number>8</number></property>
+          <property name="spacing"><number>6</number></property>
           <item>
            <widget class="QLabel" name="stabFrameLabel">
             <property name="text"><string>Frame :</string></property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="prevStabButton">
+            <property name="text"><string>&lt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>
@@ -643,6 +690,13 @@
               <horstretch>1</horstretch><verstretch>0</verstretch>
              </sizepolicy>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="nextStabButton">
+            <property name="text"><string>&gt;</string></property>
+            <property name="maximumWidth"><number>30</number></property>
+            <property name="minimumHeight"><number>28</number></property>
            </widget>
           </item>
           <item>

@@ -16,31 +16,39 @@ public:
     ~VideoProcessingWindow();
 
 private slots:
-    // Tab 1 — Per-Frame Filter
+    // Tab 1
     void onLoadVideoFilter();
     void onFilterSliderChanged(int value);
+    void onPrevFilterFrame();
+    void onNextFilterFrame();
     void onExportFilter();
     void onExportTimerTick();
-    // Tab 2 — Optical Flow
+    // Tab 2
     void onLoadVideoFlow();
     void onToggleFlowPlay();
     void onFlowSpeedChanged(int value);
     void onFlowSliderChanged(int value);
+    void onPrevFlowFrame();
+    void onNextFlowFrame();
     void onFlowTimerTick();
-    // Tab 3 — Motion Recording
+    // Tab 3
     void onStartCam();
     void onStopCam();
     void onCamTimerTick();
     void onMotionThreshChanged(int value);
-    // Tab 4 — Time-lapse / Slow-motion
+    // Tab 4
     void onLoadVideoTimelapse();
     void onTimelapseSliderChanged(int value);
+    void onPrevTimelapseFrame();
+    void onNextTimelapseFrame();
     void onExportTimelapse();
     void onTimelapseExportTick();
-    // Tab 5 — Stabilization
+    // Tab 5
     void onLoadVideoStab();
     void onStabilize();
     void onStabSliderChanged(int value);
+    void onPrevStabFrame();
+    void onNextStabFrame();
     void onExportStab();
     void onStabTimerTick();
     void onStabExportTick();
@@ -54,14 +62,13 @@ private:
     Ui::VideoProcessing* ui;
     QWidget*             m_startInterface;
 
-    // ── Tab 1
+    // Tab 1
     cv::VideoCapture m_filterCap;
     cv::VideoWriter  m_filterWriter;
     QTimer*          m_exportTimer        = nullptr;
     int              m_filterTotal        = 0;
     int              m_exportCurrent      = 0;
-
-    // ── Tab 2
+    // Tab 2
     cv::VideoCapture         m_flowCap;
     cv::Mat                  m_prevGrayFlow;
     std::vector<cv::Point2f> m_flowPoints;
@@ -69,8 +76,7 @@ private:
     int                      m_flowTotal    = 0;
     int                      m_flowFrameIdx = 0;
     bool                     m_flowPlaying  = false;
-
-    // ── Tab 3
+    // Tab 3
     cv::VideoCapture m_webcam;
     cv::VideoWriter  m_motionWriter;
     cv::Mat          m_prevFrameGray;
@@ -78,15 +84,13 @@ private:
     bool             m_recording          = false;
     int              m_noMotionFrames     = 0;
     QString          m_motionRecordPath;
-
-    // ── Tab 4
+    // Tab 4
     cv::VideoCapture m_timelapseCap;
     cv::VideoWriter  m_timelapseWriter;
     QTimer*          m_timelapseTimer     = nullptr;
     int              m_timelapseTotal     = 0;
     int              m_timelapseExportIdx = 0;
-
-    // ── Tab 5
+    // Tab 5
     cv::VideoCapture     m_stabCap;
     cv::VideoWriter      m_stabWriter;
     cv::Mat              m_stabPrevGray;
@@ -95,25 +99,22 @@ private:
     int                  m_stabTotal       = 0;
     int                  m_stabProcessIdx  = 0;
     int                  m_stabExportIdx   = 0;
-    int                  m_stabPhase       = 0; // 0=idle, 1=computing, 2=ready
+    int                  m_stabPhase       = 0;
     std::vector<StabT>   m_stabTransforms;
     std::vector<StabT>   m_stabTrajectory;
     std::vector<StabT>   m_stabSmoothed;
 
     void           applyStyles();
     void           setStatus(const QString& msg, StatusType type = StatusType::Info);
-    // Tab 1
+    static bool    openVideo(cv::VideoCapture& cap, const QString& path);
     cv::Mat        grabFrame(int index);
-    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
-    // Tab 2
+    cv::Mat        grabTimelapsFrame(int index);
     cv::Mat        computeFarnebackFlow(const cv::Mat& prevGray, const cv::Mat& curr);
     cv::Mat        computeLucasKanadeFlow(const cv::Mat& prevGray, const cv::Mat& curr);
-    // Tab 4
-    cv::Mat        grabTimelapsFrame(int index);
-    // Tab 5
     StabT          computeStabTransform(const cv::Mat& prev, const cv::Mat& curr);
     void           computeTrajectoryAndSmooth();
     cv::Mat        applyStabCorrection(const cv::Mat& frame, int idx);
-    // Shared
+    static void    showPixmap(QLabel* label, const cv::Mat& mat);
     static QPixmap matToPixmap(const cv::Mat& mat);
+    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
 };
