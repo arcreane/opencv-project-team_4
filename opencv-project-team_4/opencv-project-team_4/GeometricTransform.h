@@ -53,12 +53,16 @@ private slots:
     void onBack();
 
 private:
+    enum class StatusType { Info, Success, Error };
+
     Ui::GeometricTransform* ui;
     QWidget*                m_startInterface;
     cv::Mat                 m_srcImage;
     cv::Mat                 m_resultImage;
 
-    void           setStatus(const QString& msg);
+    void           setStatus(const QString& msg, StatusType type = StatusType::Info);
     void           prefillDestPoints();
+    void           applyStyles();
+    void           showResultWithFadeIn(const QPixmap& pixmap);
     static QPixmap matToPixmap(const cv::Mat& mat);
 };

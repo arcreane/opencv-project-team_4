@@ -4,6 +4,8 @@
 #include <QFileDialog>
 #include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/imgcodecs.hpp>
 
@@ -96,14 +98,13 @@ void ClickableImageLabel::mousePressEvent(QMouseEvent* event)
 
 void ClickableImageLabel::paintEvent(QPaintEvent* event)
 {
-    if (m_basePixmap.isNull()) {
-        QLabel::paintEvent(event);
-        return;
-    }
+    // Let QLabel draw background, border and placeholder text (from QSS)
+    QLabel::paintEvent(event);
+
+    if (m_basePixmap.isNull()) return;
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    painter.fillRect(rect(), palette().color(QPalette::Window));
     painter.drawPixmap(imageRect().toRect(), m_basePixmap);
 
     if (m_points.isEmpty()) return;
@@ -135,6 +136,9 @@ GeometricTransformWindow::GeometricTransformWindow(QWidget* startInterface, QWid
     , m_startInterface(startInterface)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose);
+
+    applyStyles();
 
     // Table setup
     ui->destPointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -172,7 +176,7 @@ void GeometricTransformWindow::onLoadImage()
 
     m_srcImage = cv::imread(path.toStdString());
     if (m_srcImage.empty()) {
-        setStatus("Erreur : impossible de charger l'image.");
+        setStatus("Erreur : impossible de charger l'image.", StatusType::Error);
         return;
     }
 
@@ -183,7 +187,7 @@ void GeometricTransformWindow::onLoadImage()
     prefillDestPoints();
 
     setStatus(QString("Image chargée : %1 × %2 px  —  cliquez sur l'image pour placer les points")
-              .arg(m_srcImage.cols).arg(m_srcImage.rows));
+              .arg(m_srcImage.cols).arg(m_srcImage.rows), StatusType::Info);
 }
 
 void GeometricTransformWindow::onTransformTypeChanged(int index)
@@ -197,13 +201,14 @@ void GeometricTransformWindow::onTransformTypeChanged(int index)
 
     setStatus(isPerspective
         ? "Mode Perspective : placez 4 points source sur l'image"
-        : "Mode Affine : placez 3 points source sur l'image");
+        : "Mode Affine : placez 3 points source sur l'image",
+        StatusType::Info);
 }
 
 void GeometricTransformWindow::onApplyTransform()
 {
     if (m_srcImage.empty()) {
-        setStatus("Chargez d'abord une image.");
+        setStatus("Chargez d'abord une image.", StatusType::Error);
         return;
     }
 
@@ -213,17 +218,17 @@ void GeometricTransformWindow::onApplyTransform()
     QVector<QPointF> srcPts = ui->sourceImageLabel->getPoints();
     if (srcPts.size() < neededPts) {
         setStatus(QString("Il faut %1 points source (%2 placé(s) actuellement).")
-                  .arg(neededPts).arg(srcPts.size()));
+                  .arg(neededPts).arg(srcPts.size()), StatusType::Error);
         return;
     }
 
-    // Read destination coordinates from table
     std::vector<cv::Point2f> dst, src;
     for (int i = 0; i < neededPts; ++i) {
         auto* ix = ui->destPointsTable->item(i, 0);
         auto* iy = ui->destPointsTable->item(i, 1);
         if (!ix || !iy || ix->text().isEmpty() || iy->text().isEmpty()) {
-            setStatus(QString("Remplissez les coordonnées destination pour P%1.").arg(i + 1));
+            setStatus(QString("Remplissez les coordonnées destination pour P%1.").arg(i + 1),
+                      StatusType::Error);
             return;
         }
         dst.push_back({ ix->text().toFloat(), iy->text().toFloat() });
@@ -242,17 +247,18 @@ void GeometricTransformWindow::onApplyTransform()
             cv::warpPerspective(m_srcImage, m_resultImage, M, { outW, outH });
         }
     } catch (const cv::Exception& e) {
-        setStatus(QString("Erreur OpenCV : %1").arg(e.what()));
+        setStatus(QString("Erreur OpenCV : %1").arg(e.what()), StatusType::Error);
         return;
     }
 
-    QPixmap result = matToPixmap(m_resultImage);
     QSize displaySize = ui->resultLabel->size();
     if (displaySize.width() < 10 || displaySize.height() < 10)
         displaySize = QSize(600, 500);
-    ui->resultLabel->setPixmap(result.scaled(displaySize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+    showResultWithFadeIn(matToPixmap(m_resultImage)
+        .scaled(displaySize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->saveButton->setEnabled(true);
-    setStatus("Transformation appliquée avec succès.");
+    setStatus("Transformation appliquée avec succès.", StatusType::Success);
 }
 
 void GeometricTransformWindow::onResetPoints()
@@ -262,7 +268,7 @@ void GeometricTransformWindow::onResetPoints()
     ui->resultLabel->clear();
     ui->resultLabel->setText("Placez les points et cliquez sur Appliquer");
     ui->saveButton->setEnabled(false);
-    setStatus("Points réinitialisés.");
+    setStatus("Points réinitialisés.", StatusType::Info);
 }
 
 void GeometricTransformWindow::onSaveResult()
@@ -274,9 +280,9 @@ void GeometricTransformWindow::onSaveResult()
     if (path.isEmpty()) return;
 
     if (cv::imwrite(path.toStdString(), m_resultImage))
-        setStatus("Image sauvegardée : " + path);
+        setStatus("Image sauvegardée : " + path, StatusType::Success);
     else
-        setStatus("Erreur : impossible de sauvegarder l'image.");
+        setStatus("Erreur : impossible de sauvegarder l'image.", StatusType::Error);
 }
 
 void GeometricTransformWindow::onBack()
@@ -286,9 +292,27 @@ void GeometricTransformWindow::onBack()
     close();
 }
 
-void GeometricTransformWindow::setStatus(const QString& msg)
+void GeometricTransformWindow::setStatus(const QString& msg, StatusType type)
 {
     ui->statusLabel->setText("  " + msg);
+
+    const char* style = nullptr;
+    switch (type) {
+    case StatusType::Success:
+        style = "color:#48d890;background:#071510;border:1px solid #1a5c3a;"
+                "border-radius:6px;padding:0 10px;font-size:12px;font-family:'Segoe UI';";
+        break;
+    case StatusType::Error:
+        style = "color:#ff5f5f;background:#180808;border:1px solid #5c1a1a;"
+                "border-radius:6px;padding:0 10px;font-size:12px;font-family:'Segoe UI';";
+        break;
+    case StatusType::Info:
+    default:
+        style = "color:#8888aa;background:#0a0a18;border:1px solid #1c1c38;"
+                "border-radius:6px;padding:0 10px;font-size:12px;font-family:'Segoe UI';";
+        break;
+    }
+    ui->statusLabel->setStyleSheet(QString::fromLatin1(style));
 }
 
 void GeometricTransformWindow::prefillDestPoints()
@@ -297,9 +321,9 @@ void GeometricTransformWindow::prefillDestPoints()
     int h = ui->heightSpinBox->value();
 
     const double pts[4][2] = {
-        { 0.0,          0.0         },
-        { (double)(w-1), 0.0         },
-        { 0.0,          (double)(h-1) },
+        { 0.0,           0.0           },
+        { (double)(w-1), 0.0           },
+        { 0.0,           (double)(h-1) },
         { (double)(w-1), (double)(h-1) }
     };
 
@@ -307,6 +331,22 @@ void GeometricTransformWindow::prefillDestPoints()
         ui->destPointsTable->setItem(i, 0, new QTableWidgetItem(QString::number((int)pts[i][0])));
         ui->destPointsTable->setItem(i, 1, new QTableWidgetItem(QString::number((int)pts[i][1])));
     }
+}
+
+void GeometricTransformWindow::showResultWithFadeIn(const QPixmap& pixmap)
+{
+    ui->resultLabel->setPixmap(pixmap);
+
+    auto* effect = new QGraphicsOpacityEffect(ui->resultLabel);
+    ui->resultLabel->setGraphicsEffect(effect);
+    effect->setOpacity(0.0);
+
+    auto* anim = new QPropertyAnimation(effect, "opacity", this);
+    anim->setDuration(550);
+    anim->setStartValue(0.0);
+    anim->setEndValue(1.0);
+    anim->setEasingCurve(QEasingCurve::OutCubic);
+    anim->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 QPixmap GeometricTransformWindow::matToPixmap(const cv::Mat& mat)
@@ -317,4 +357,360 @@ QPixmap GeometricTransformWindow::matToPixmap(const cv::Mat& mat)
     return QPixmap::fromImage(
         QImage(rgb.data, rgb.cols, rgb.rows, (int)rgb.step, QImage::Format_RGB888).copy()
     );
+}
+
+// ============================================================
+// Stylesheet
+// ============================================================
+
+void GeometricTransformWindow::applyStyles()
+{
+    setStyleSheet(R"(
+
+/* ── Window & surfaces ───────────────────────────────── */
+QMainWindow {
+    background-color: #0d0d1c;
+}
+QWidget#centralwidget {
+    background-color: #0d0d1c;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+QFrame#headerFrame {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #14143a, stop:1 #1e0e38);
+    border-bottom: 1px solid #2a2060;
+}
+QLabel#titleLabel {
+    color: #d0d0ff;
+    font-family: 'Segoe UI';
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    background: transparent;
+}
+QLabel#subtitleLabel {
+    color: #5a5a90;
+    font-family: 'Segoe UI';
+    font-size: 11px;
+    background: transparent;
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+QFrame#footerFrame {
+    background-color: #08080f;
+    border-top: 1px solid #181830;
+}
+
+/* ── Dividers ─────────────────────────────────────────── */
+QFrame#divider1, QFrame#divider2 {
+    color: #1e1e40;
+    max-width: 1px;
+}
+
+/* ── Section-header labels ───────────────────────────── */
+QLabel#sourceTitleLabel,
+QLabel#resultTitleLabel,
+QLabel#transformLabel,
+QLabel#destLabel,
+QLabel#sizeLabel {
+    color: #50508a;
+    font-family: 'Segoe UI';
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    background: transparent;
+}
+
+/* ── Hint / size sub-labels ──────────────────────────── */
+QLabel#hintLabel {
+    color: #38385a;
+    font-family: 'Segoe UI';
+    font-size: 10px;
+    font-style: italic;
+    background: transparent;
+}
+QLabel#widthLabel, QLabel#heightLabel {
+    color: #60608a;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    background: transparent;
+}
+
+/* ── Source image label ──────────────────────────────── */
+QLabel#sourceImageLabel {
+    background-color: #07070f;
+    border: 1px solid #1a1a38;
+    border-radius: 6px;
+    color: #30304c;
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+/* ── Result display ──────────────────────────────────── */
+QLabel#resultLabel {
+    background-color: #07070f;
+    border: 1px solid #1a1a38;
+    border-radius: 10px;
+    color: #30304c;
+    font-family: 'Segoe UI';
+    font-size: 14px;
+}
+
+/* ── Table widget ────────────────────────────────────── */
+QTableWidget#destPointsTable {
+    background-color: #07070f;
+    border: 1px solid #1a1a38;
+    border-radius: 8px;
+    color: #c0c0e0;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    gridline-color: #181830;
+    outline: none;
+}
+QTableWidget#destPointsTable::item {
+    padding: 4px;
+}
+QTableWidget#destPointsTable::item:selected {
+    background-color: #28286a;
+    color: #ffffff;
+}
+QHeaderView::section {
+    background-color: #0d0d22;
+    color: #6060a0;
+    border: none;
+    border-bottom: 1px solid #1e1e40;
+    font-family: 'Segoe UI';
+    font-size: 11px;
+    padding: 4px;
+}
+QTableCornerButton::section {
+    background-color: #0d0d22;
+    border: none;
+}
+
+/* ── SpinBox ─────────────────────────────────────────── */
+QSpinBox {
+    background-color: #0a0a1c;
+    border: 1px solid #252550;
+    border-radius: 6px;
+    color: #c0c0e0;
+    padding: 3px 6px;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+}
+QSpinBox:hover {
+    border-color: #4848a8;
+    background-color: #0e0e26;
+}
+QSpinBox::up-button, QSpinBox::down-button {
+    background-color: #141432;
+    border: none;
+    width: 16px;
+}
+QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+    background-color: #20204a;
+}
+QSpinBox::up-arrow {
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 5px solid #6060a0;
+}
+QSpinBox::down-arrow {
+    image: none;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #6060a0;
+}
+
+/* ── ComboBox ────────────────────────────────────────── */
+QComboBox#transformCombo {
+    background-color: #0a0a1c;
+    border: 1px solid #252550;
+    border-radius: 8px;
+    color: #c0c0e0;
+    padding: 4px 10px;
+    font-family: 'Segoe UI';
+    font-size: 13px;
+}
+QComboBox#transformCombo:hover {
+    border-color: #4848a8;
+    background-color: #0e0e26;
+}
+QComboBox#transformCombo::drop-down {
+    border: none;
+    width: 24px;
+}
+QComboBox QAbstractItemView {
+    background-color: #0d0d1c;
+    border: 1px solid #252550;
+    color: #c0c0e0;
+    selection-background-color: #28286a;
+    selection-color: #ffffff;
+}
+
+/* ── Buttons – base ──────────────────────────────────── */
+QPushButton {
+    background-color: #16162e;
+    color: #b0b0d0;
+    border: 1px solid #26264c;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    font-weight: 500;
+}
+QPushButton:hover {
+    background-color: #20204a;
+    border-color: #3c3c8a;
+    color: #dcdcff;
+}
+QPushButton:pressed {
+    background-color: #0c0c20;
+    border-color: #5858b0;
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+QPushButton:disabled {
+    background-color: #0c0c18;
+    border-color: #141428;
+    color: #303050;
+}
+
+/* ── Load – green accent ─────────────────────────────── */
+QPushButton#loadButton {
+    background-color: #0a2518;
+    border-color: #185a35;
+    color: #48c880;
+}
+QPushButton#loadButton:hover {
+    background-color: #103020;
+    border-color: #287a50;
+    color: #68e8a0;
+}
+QPushButton#loadButton:pressed {
+    background-color: #06150e;
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+
+/* ── Apply – gradient accent (main CTA) ──────────────── */
+QPushButton#applyButton {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #3838e8, stop:1 #8820d8);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Segoe UI';
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+QPushButton#applyButton:hover {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #5050ff, stop:1 #a030f0);
+}
+QPushButton#applyButton:pressed {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #2828c0, stop:1 #6818b0);
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+QPushButton#applyButton:disabled {
+    background: #141428;
+    color: #303050;
+}
+
+/* ── Reset – red accent ──────────────────────────────── */
+QPushButton#resetButton {
+    background-color: #250a0a;
+    border-color: #5a1818;
+    color: #c84848;
+}
+QPushButton#resetButton:hover {
+    background-color: #301010;
+    border-color: #7a2828;
+    color: #e86868;
+}
+QPushButton#resetButton:pressed {
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+
+/* ── Save – blue accent ──────────────────────────────── */
+QPushButton#saveButton {
+    background-color: #0a1828;
+    border-color: #183868;
+    color: #4898d0;
+}
+QPushButton#saveButton:hover {
+    background-color: #101e32;
+    border-color: #285898;
+    color: #68b8f0;
+}
+QPushButton#saveButton:disabled {
+    background-color: #0a0a18;
+    border-color: #141428;
+    color: #283040;
+}
+
+/* ── Back – purple-grey ──────────────────────────────── */
+QPushButton#backButton {
+    background-color: #181424;
+    border-color: #362850;
+    color: #8860b8;
+}
+QPushButton#backButton:hover {
+    background-color: #20182e;
+    border-color: #503878;
+    color: #a888d8;
+}
+
+/* ── Scrollbars ──────────────────────────────────────── */
+QScrollBar:vertical {
+    background: #07070f;
+    width: 6px;
+    margin: 0;
+    border-radius: 3px;
+}
+QScrollBar::handle:vertical {
+    background: #252558;
+    border-radius: 3px;
+    min-height: 20px;
+}
+QScrollBar::handle:vertical:hover { background: #3838a0; }
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical { height: 0; }
+
+QScrollBar:horizontal {
+    background: #07070f;
+    height: 6px;
+    border-radius: 3px;
+}
+QScrollBar::handle:horizontal {
+    background: #252558;
+    border-radius: 3px;
+}
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal { width: 0; }
+
+/* ── Menu / status bars ──────────────────────────────── */
+QMenuBar {
+    background-color: #08080f;
+    color: #606090;
+    border-bottom: 1px solid #14142a;
+}
+QMenuBar::item:selected {
+    background-color: #1a1a38;
+    color: #c0c0e0;
+}
+QStatusBar {
+    background-color: #08080f;
+    color: #404070;
+    border-top: 1px solid #14142a;
+    font-size: 11px;
+}
+
+)");
 }
