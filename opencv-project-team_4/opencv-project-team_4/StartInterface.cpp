@@ -49,8 +49,9 @@ void StartInterface::goToHistogramInterface() {
 	
 }
 void StartInterface::goToVideoInterface() {
-	// Implement the logic to navigate to the Video Processing Interface
-	
+	VideoProcessingWindow* video = new VideoProcessingWindow(this, nullptr);
+	video->show();
+	hide();
 }
 void StartInterface::goToDeepLearningInterface() {
 	// Implement the logic to navigate to the Deep Learning Interface
