@@ -27,6 +27,11 @@ private slots:
     void onFlowSpeedChanged(int value);
     void onFlowSliderChanged(int value);
     void onFlowTimerTick();
+    // Tab 3 — Motion Recording
+    void onStartCam();
+    void onStopCam();
+    void onCamTimerTick();
+    void onMotionThreshChanged(int value);
     // Common
     void onBack();
 
@@ -52,14 +57,23 @@ private:
     int                      m_flowFrameIdx = 0;
     bool                     m_flowPlaying  = false;
 
+    // ── Tab 3
+    cv::VideoCapture m_webcam;
+    cv::VideoWriter  m_motionWriter;
+    cv::Mat          m_prevFrameGray;
+    QTimer*          m_camTimer        = nullptr;
+    bool             m_recording       = false;
+    int              m_noMotionFrames  = 0;
+    QString          m_motionRecordPath;
+
     void           applyStyles();
     void           setStatus(const QString& msg, StatusType type = StatusType::Info);
     // Tab 1
     cv::Mat        grabFrame(int index);
+    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
     // Tab 2
-    cv::Mat        computeFarnebackFlow(const cv::Mat& prev, const cv::Mat& curr);
-    cv::Mat        computeLucasKanadeFlow(const cv::Mat& prev, const cv::Mat& curr);
+    cv::Mat        computeFarnebackFlow(const cv::Mat& prevGray, const cv::Mat& curr);
+    cv::Mat        computeLucasKanadeFlow(const cv::Mat& prevGray, const cv::Mat& curr);
     // Shared
     static QPixmap matToPixmap(const cv::Mat& mat);
-    static cv::Mat applyFilter(const cv::Mat& frame, const QString& filterName);
 };
