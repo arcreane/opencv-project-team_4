@@ -36,8 +36,9 @@ void StartInterface::goToCannyEdgeInterface() {
 	
 }
 void StartInterface::goToGeometricInterface() {
-	// Implement the logic to navigate to the Geometric Transformations Interface
-	
+	GeometricTransformWindow* geo = new GeometricTransformWindow(this, nullptr);
+	geo->show();
+	hide();
 }
 void StartInterface::goToPanoramaInterface() {
 	PanoramaStitching* panorama = new PanoramaStitching(this, nullptr);
