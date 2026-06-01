@@ -162,6 +162,16 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="MainWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="maiwindow.h" />
       <AdditionalLibraryDirectories>$(OPENCV_DIR)\build\x64\vc16\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Qt6Widgets.lib;Qt6Gui.lib;Qt6Core.lib;opencv_world4120.lib</AdditionalDependencies>
     </Link>

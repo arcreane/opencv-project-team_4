@@ -58,4 +58,17 @@
       <Filter>Fichiers d%27en-tête\GeometricTransform</Filter>
     </QtMoc>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="maiwindow.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="MainWindow.ui" />
+  </ItemGroup>
 </Project>
