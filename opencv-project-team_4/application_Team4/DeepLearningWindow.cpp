@@ -11,6 +11,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QApplication>
+#include "StartInterface.h"
 
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::DeepLearningWindow) {
@@ -65,10 +66,13 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 
 	connect(ui->detectObjectDeep, &QPushButton::clicked,this, &DeepLearningWindow::deepLearningapply);
     connect(ui->savedButton, &QPushButton::clicked, this, &DeepLearningWindow::saveImage);
-
-	
+	connect(ui->BackButton, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
 }
-
+void DeepLearningWindow::backToStartInterface() {
+    this->close();
+    StartInterface* start = new StartInterface(this);
+    start->show();
+}
 
 void DeepLearningWindow::resizeEvent(QResizeEvent* event) {
     QMainWindow::resizeEvent(event);
@@ -110,6 +114,9 @@ void DeepLearningWindow::repositionWidgets() {
 
     ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);  // aligné sous labelDropDeep
     ui->savedButton->setGeometry(c2, btnY, btnW, btnH);
+    ui->BackButton->setParent(this);
+    ui->BackButton->setGeometry(0, 0, 200, 40);
+    ui->BackButton->raise();
 }
 void DeepLearningWindow::saveImage() {
     QPixmap pix = ui->labelOutput->pixmap(Qt::ReturnByValue);
@@ -383,7 +390,26 @@ QPushButton#savedButton:pressed {
     padding-top: 8px;
     padding-bottom: 4px;
 }
-
+/* ── Back button ─────────────────────────────────────── */
+QPushButton#BackButton {
+    font-family: 'Segoe UI';
+    font-size: 14px;
+    font-weight: bold;
+    color: #d0d0ff;
+    background-color: #1a1a2e;
+    border: 2px solid #d0d0ff;
+    border-radius: 5px;
+}
+QPushButton#BackButton:hover {
+    background-color: #20204a;
+    border-color: #ffffff;
+    color: #ffffff;
+}
+QPushButton#BackButton:pressed {
+    background-color: #0c0c20;
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
 /* ── Scrollbars ──────────────────────────────────────── */
 QScrollBar:vertical {
     background: #07070f;

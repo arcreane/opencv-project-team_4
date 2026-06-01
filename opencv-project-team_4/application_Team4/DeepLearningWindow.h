@@ -15,6 +15,7 @@ public:
 	void resizeEvent(QResizeEvent* event) override;
 	void repositionWidgets();
 	void saveImage();
+	void backToStartInterface();
 private slots:
     void deepLearningapply();
 private:

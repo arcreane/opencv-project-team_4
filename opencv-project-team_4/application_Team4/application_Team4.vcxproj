@@ -112,27 +112,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\opencv-project-team_4\GeometricTransform.cpp" />
+    <ClCompile Include="..\opencv-project-team_4\main.cpp" />
+    <ClCompile Include="..\opencv-project-team_4\PanoramaStitching.cpp" />
+    <ClCompile Include="..\opencv-project-team_4\StartInterface.cpp" />
+    <ClCompile Include="..\opencv-project-team_4\VideoProcessing.cpp" />
     <ClCompile Include="CannyFilter.cpp" />
     <ClCompile Include="ClosingFilter.cpp" />
     <ClCompile Include="DeepLearningWindow.cpp" />
     <ClCompile Include="DilationFilter.cpp" />
-    <ClCompile Include="DragAndDropWindow.cpp" />
+    <ClCompile Include="MorphologyWindow.cpp" />
     <ClCompile Include="DragDropCannyEdge.cpp" />
     <ClCompile Include="ErosionFilter.cpp" />
     <ClCompile Include="imagedropLabel.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="OpeningFilter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="..\opencv-project-team_4\GeometricTransform.ui" />
+    <QtUic Include="..\opencv-project-team_4\PanoramaStitching.ui" />
+    <QtUic Include="..\opencv-project-team_4\StartInterface.ui" />
+    <QtUic Include="..\opencv-project-team_4\VideoProcessing.ui" />
     <QtUic Include="DeepLearningWindow.ui" />
-    <QtUic Include="DragAndDropWindow.ui" />
+    <QtUic Include="MorphologyWindow.ui" />
     <QtUic Include="DragDropCannyEdge.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="DragAndDropWindow.h" />
+    <QtMoc Include="MorphologyWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="ErosionFilter.h" />
@@ -157,6 +165,18 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="DriveDataser.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\opencv-project-team_4\GeometricTransform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\opencv-project-team_4\PanoramaStitching.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\opencv-project-team_4\StartInterface.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="..\opencv-project-team_4\VideoProcessing.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

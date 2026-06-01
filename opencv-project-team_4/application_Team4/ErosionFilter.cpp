@@ -1,5 +1,5 @@
 #include "ErosionFilter.h"
-#include "ui_DragAndDropWindow.h"
+#include "ui_MorphologyWindow.h"
 #include <opencv2/opencv.hpp>
 
 

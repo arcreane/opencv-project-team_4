@@ -1,9 +1,6 @@
 #include "StartInterface.h"
 #include "ui_StartInterface.h"
-#include "MorphologyWindow.h"
-#include "DragDropCannyEdge.h"
-#include "DeepLearningWindow.h"
-
+#include "PanoramaStitching.h"
 
 
 #include <QDebug>
@@ -27,18 +24,16 @@ StartInterface::~StartInterface() {
 	delete ui;
 }
 void StartInterface::goToMorphologyInterface() {
-	MorphologyWindow* morph = new MorphologyWindow(nullptr);
-	morph->show();
-	hide();
+	// Implement the logic to navigate to the Morphology Interface
+	
 }
 void StartInterface::goToThresholdingInterface() {
 	// Implement the logic to navigate to the Thresholding Interface
 	
 }
 void StartInterface::goToCannyEdgeInterface() {
-	DragDropCannyEdge* canny = new DragDropCannyEdge(nullptr);
-	canny->show();
-	hide();
+	// Implement the logic to navigate to the Canny Edge Detection Interface
+	
 }
 void StartInterface::goToGeometricInterface() {
 	GeometricTransformWindow* geo = new GeometricTransformWindow(this, nullptr);
@@ -60,9 +55,8 @@ void StartInterface::goToVideoInterface() {
 	hide();
 }
 void StartInterface::goToDeepLearningInterface() {
-	DeepLearningWindow* deep = new DeepLearningWindow(this);
-	deep->show();
-	hide();
+	// Implement the logic to navigate to the Deep Learning Interface
+	
 }
 void StartInterface::goToInteractiveInterface() {
 	// Implement the logic to navigate to the Interactive Interface

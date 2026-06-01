@@ -20,6 +20,7 @@ private slots:
     void onApplyCannyClicked();
 	void onSliderChanged();
 	void saveImage();
+    void backToStartInterface();
 
 
 private:

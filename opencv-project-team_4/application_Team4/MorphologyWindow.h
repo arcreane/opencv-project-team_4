@@ -10,11 +10,11 @@ namespace Ui { class Morphology; }
 QT_END_NAMESPACE
 class ErosionOperation;
 
-class DragAndDropWindow : public QMainWindow {
+class MorphologyWindow : public QMainWindow {
     Q_OBJECT
 public:
-    explicit DragAndDropWindow(QWidget* parent = nullptr);
-    ~DragAndDropWindow();
+    explicit MorphologyWindow(QWidget* parent = nullptr);
+    ~MorphologyWindow();
     void resizeEvent(QResizeEvent* event) override;
     void repositionWidgets();
     void saveImage();
@@ -25,6 +25,7 @@ private slots:
     void createOpeningInterface();
     void createClosingInterface();
     void applyCurrentFilter();
+	void backToStartInterface();
 
 private:
     Ui::Morphology* ui; 

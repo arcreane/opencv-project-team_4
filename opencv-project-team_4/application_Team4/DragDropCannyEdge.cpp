@@ -1,6 +1,7 @@
 #include "DragDropCannyEdge.h"
 #include "ui_DragDropCannyEdge.h"
 #include "imagedropLabel.h"        
+#include "StartInterface.h"
 #include <opencv2/opencv.hpp>
 #include <QFileDialog>
 #include <QDebug>
@@ -38,8 +39,13 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	connect(ui->lowerTslider, &QSlider::valueChanged,this, &DragDropCannyEdge::onSliderChanged);
 	connect(ui->higherTslider, &QSlider::valueChanged,this, &DragDropCannyEdge::onSliderChanged);
 	connect(ui->savedButton, &QPushButton::clicked, this, &DragDropCannyEdge::saveImage);
+	connect(ui->BackButton, &QPushButton::clicked, this, &DragDropCannyEdge::backToStartInterface);
 }
-
+void DragDropCannyEdge::backToStartInterface() {
+	this->close();
+	StartInterface* start = new StartInterface(this);
+	start->show();
+}
 DragDropCannyEdge::~DragDropCannyEdge() {
 	delete ui;
 }
@@ -107,6 +113,8 @@ void DragDropCannyEdge::repositionWidgets() {
 	ui->higherTslider->setGeometry(c1, rowY + step * 3, column1, btnH);
 	ui->apertureLabel->setGeometry(c1, rowY + step * 4, column1, btnH);
 	ui->apertureBox->setGeometry(c1, rowY + step * 5, column1, btnH);
+	ui->BackButton->setGeometry(0, 0, 200, 40);
+	ui->BackButton->setStyleSheet("font-family: 'Segoe UI'; font-size: 14px; font-weight: bold; color: #d0d0ff; background-color: #1a1a2e; border: 2px solid #d0d0ff; border-radius: 5px;");
 }
 
 

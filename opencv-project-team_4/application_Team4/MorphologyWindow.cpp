@@ -1,11 +1,12 @@
-#include "DragAndDropWindow.h"
-#include "ui_DragAndDropWindow.h"
+#include "MorphologyWindow.h"
+#include "ui_MorphologyWindow.h"
 #include "ErosionFilter.h"
 #include "DilationFilter.h"
 #include <QFileDialog>
+#include "StartInterface.h"
 
 #include <QDebug>
-DragAndDropWindow::DragAndDropWindow(QWidget* parent)
+MorphologyWindow::MorphologyWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::Morphology) {
 
 	ui->setupUi(this);
@@ -46,15 +47,24 @@ DragAndDropWindow::DragAndDropWindow(QWidget* parent)
 			ui->ClosingFilter->setEnabled(true);
 		});
 	ui->applyButton->setVisible(false);
-	connect(ui->ErosionFilter, &QPushButton::clicked, this, &DragAndDropWindow::createErosionInterface);
-	connect(ui->DilationFilter, &QPushButton::clicked, this, &DragAndDropWindow::createDilationInterface);
-	connect(ui->OpeningFilter, &QPushButton::clicked, this, &DragAndDropWindow::createOpeningInterface);
-	connect(ui->ClosingFilter, &QPushButton::clicked, this, &DragAndDropWindow::createClosingInterface);
-	connect(ui->applyButton, &QPushButton::clicked, this, &DragAndDropWindow::applyCurrentFilter);
-	connect(ui->savedButton, &QPushButton::clicked, this, &DragAndDropWindow::saveImage);
+	connect(ui->ErosionFilter, &QPushButton::clicked, this, &MorphologyWindow::createErosionInterface);
+	connect(ui->DilationFilter, &QPushButton::clicked, this, &MorphologyWindow::createDilationInterface);
+	connect(ui->OpeningFilter, &QPushButton::clicked, this, &MorphologyWindow::createOpeningInterface);
+	connect(ui->ClosingFilter, &QPushButton::clicked, this, &MorphologyWindow::createClosingInterface);
+	connect(ui->applyButton, &QPushButton::clicked, this, &MorphologyWindow::applyCurrentFilter);
+	connect(ui->savedButton, &QPushButton::clicked, this, &MorphologyWindow::saveImage);
+	connect(ui->BackButton, &QPushButton::clicked, this, &MorphologyWindow::backToStartInterface);
 
 }
-void DragAndDropWindow::saveImage() {
+
+void MorphologyWindow::backToStartInterface() {
+	this->close();
+	StartInterface* start = new StartInterface(this);
+	start->show();
+}
+
+
+void MorphologyWindow::saveImage() {
 	QPixmap pix = ui->resultLabel->pixmap(Qt::ReturnByValue);
 	if (!pix.isNull()) {
 		QString fileName = QFileDialog::getSaveFileName(
@@ -66,12 +76,12 @@ void DragAndDropWindow::saveImage() {
 		}
 	}
 }
-void DragAndDropWindow::resizeEvent(QResizeEvent* event) {
+void MorphologyWindow::resizeEvent(QResizeEvent* event) {
 	QMainWindow::resizeEvent(event);
 	repositionWidgets();
 }
 
-void DragAndDropWindow::repositionWidgets() {
+void MorphologyWindow::repositionWidgets() {
 	int Width = this->width();
 	int Height = this->height();
 
@@ -127,12 +137,14 @@ void DragAndDropWindow::repositionWidgets() {
 	ui->rectMorph->setGeometry(c1, ctrlTop + step * 5, column1, btnH);
 	ui->ellipseMorph->setGeometry(c1, ctrlTop + step * 6, column1, btnH);
 	ui->crossMorph->setGeometry(c1, ctrlTop + step * 7, column1, btnH);
+	ui->BackButton->setGeometry(0, 0, 200, 40);
+	ui->BackButton->setStyleSheet("font-family: 'Segoe UI'; font-size: 14px; font-weight: bold; color: #d0d0ff; background-color: #1a1a2e; border: 2px solid #d0d0ff; border-radius: 5px;");
 }
 
-DragAndDropWindow::~DragAndDropWindow() {
+MorphologyWindow::~MorphologyWindow() {
     delete ui;
 }
-void DragAndDropWindow::createErosionInterface() {
+void MorphologyWindow::createErosionInterface() {
 	if (ui->DilationFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->ClosingFilter->isVisible()) {
 		erosionOp->showInterface();
 	}
@@ -142,7 +154,7 @@ void DragAndDropWindow::createErosionInterface() {
 	repositionWidgets();
 	
 }
-void DragAndDropWindow::createDilationInterface() {
+void MorphologyWindow::createDilationInterface() {
 	if (ui->ErosionFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->ClosingFilter->isVisible()) {
 		ui->DilationFilter->setGeometry(ui->ErosionFilter->geometry());
 		dilationOp->showInterface();
@@ -153,7 +165,7 @@ void DragAndDropWindow::createDilationInterface() {
 	}
 
 }
-void DragAndDropWindow::createOpeningInterface() {
+void MorphologyWindow::createOpeningInterface() {
 	if (ui->ErosionFilter->isVisible() || ui->DilationFilter->isVisible() || ui->ClosingFilter->isVisible()) {
 		ui->OpeningFilter->setGeometry(ui->ErosionFilter->geometry());
 		openingOp->showInterface();
@@ -165,7 +177,7 @@ void DragAndDropWindow::createOpeningInterface() {
 	}
 
 }
-void DragAndDropWindow::createClosingInterface() {
+void MorphologyWindow::createClosingInterface() {
 	if (ui->ErosionFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->DilationFilter->isVisible()) {
 		ui->ClosingFilter->setGeometry(ui->ErosionFilter->geometry());
 		closingOp->showInterface();
@@ -186,7 +198,7 @@ QImage MatToQImage(const cv::Mat& mat) {
 	return QImage(mat.data, mat.cols, mat.rows,
 		mat.step, QImage::Format_Grayscale8).copy();
 }
-void DragAndDropWindow::applyCurrentFilter() {
+void MorphologyWindow::applyCurrentFilter() {
 	if (originalImage.isNull()) return;
 	cv::Mat output;
 	cv::Mat input = QImageToMat(originalImage);
@@ -208,7 +220,7 @@ void DragAndDropWindow::applyCurrentFilter() {
 	);
 	ui->resultLabel->setPixmap(pix);
 }
-void DragAndDropWindow::applyStyles() {
+void MorphologyWindow::applyStyles() {
 	setStyleSheet(R"(
 QMainWindow { background-color: #0d0d1c; }
 QWidget#centralwidget { background-color: #0d0d1c; }

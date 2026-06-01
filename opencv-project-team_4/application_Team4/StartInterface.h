@@ -8,6 +8,7 @@
 QT_BEGIN_NAMESPACE
 namespace Ui { class StartInterface; }
 QT_END_NAMESPACE
+class ErosionOperation;
 
 class StartInterface : public QMainWindow {
     Q_OBJECT
