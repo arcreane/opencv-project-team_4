@@ -6,4 +6,5 @@
   <Project Path="application_Team4/application_Team4.vcxproj" Id="3abbd395-3024-4f8a-9e5c-0f3614354203">
     <Platform Project="x64" />
   </Project>
+  <Project Path="opencv-project-team_4/opencv-project-team_4.vcxproj" Id="383f0bbb-9c19-4b46-a350-974a450d9172" />
 </Solution>

@@ -514,3 +514,10 @@ opencv-project-team_4/.vs/opencv-project-team_4.slnx/v18/Browse.VC.db
 opencv-project-team_4/x64/Debug/application_Team4.pdb
 opencv-project-team_4/.vs/opencv-project-team_4.slnx/v18/Browse.VC.db
 opencv-project-team_4/.vs/opencv-project-team_4.slnx/v18/Browse.VC.db-shm
+opencv-project-team_4/.vs/opencv-project-team_4.slnx/v18/Browse.VC.db-wal
+.vs/
+*.db
+*.db-shm
+*.db-wal
+*.vsidx
+*.db-wal
