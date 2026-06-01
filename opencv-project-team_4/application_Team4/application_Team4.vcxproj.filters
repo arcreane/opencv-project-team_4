@@ -50,19 +50,19 @@
     <ClCompile Include="DeepLearningWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\opencv-project-team_4\GeometricTransform.cpp">
+    <ClCompile Include="GeometricTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\opencv-project-team_4\main.cpp">
+    <ClCompile Include="PanoramaStitching.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\opencv-project-team_4\PanoramaStitching.cpp">
+    <ClCompile Include="VideoProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\opencv-project-team_4\StartInterface.cpp">
+    <ClCompile Include="StartInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\opencv-project-team_4\VideoProcessing.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -94,16 +94,16 @@
     <QtMoc Include="DeepLearningWindow.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="..\opencv-project-team_4\GeometricTransform.h">
+    <QtMoc Include="GeometricTransform.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="..\opencv-project-team_4\PanoramaStitching.h">
+    <QtMoc Include="PanoramaStitching.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="..\opencv-project-team_4\StartInterface.h">
+    <QtMoc Include="StartInterface.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="..\opencv-project-team_4\VideoProcessing.h">
+    <QtMoc Include="VideoProcessing.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -117,17 +117,17 @@
     <QtUic Include="DeepLearningWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="..\opencv-project-team_4\GeometricTransform.ui">
+    <QtUic Include="PanoramaStitching.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="..\opencv-project-team_4\PanoramaStitching.ui">
+    <QtUic Include="StartInterface.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="..\opencv-project-team_4\StartInterface.ui">
+    <QtUic Include="VideoProcessing.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="..\opencv-project-team_4\VideoProcessing.ui">
-      <Filter>Form Files</Filter>
+    <QtUic Include="GeometricTransform.ui">
+      <Filter>Source Files</Filter>
     </QtUic>
   </ItemGroup>
   <ItemGroup>

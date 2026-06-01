@@ -1,5 +1,6 @@
 #pragma once
 #include <QMainWindow>
+#include <QPushButton>  
 
 #include <opencv2/opencv.hpp> 
 
@@ -25,5 +26,7 @@ private:
     std::vector<std::string> classNames;
     void loadClassNames(const std::string& path);
     void applyStyles();
+    QPushButton* backBtn = nullptr;
+
 
  }; 

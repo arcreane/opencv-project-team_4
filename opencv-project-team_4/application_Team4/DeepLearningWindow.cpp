@@ -1,6 +1,7 @@
 #include "DeepLearningWindow.h"
 #include "ui_DeepLearningWindow.h"
 #include <QDebug>
+#include <QPushButton>  
 #include <QDir>
 #include <QTimer>
 #include "imagedropLabel.h"
@@ -16,10 +17,15 @@
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::DeepLearningWindow) {
 	ui->setupUi(this);
+
 	applyStyles();
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     centralWidget()->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-
+    backBtn = new QPushButton("Back", this);  // parent = this, pas centralWidget
+    backBtn->setObjectName("BackButton");
+    backBtn->setGeometry(0, 0, 100, 40);
+    backBtn->raise();
+    connect(backBtn, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
     resize(1000, 700);
 	ui->labelOutput->setVisible(false);
     ui->labelDropDeep->setGrayscaleOnly(false);
@@ -66,7 +72,7 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 
 	connect(ui->detectObjectDeep, &QPushButton::clicked,this, &DeepLearningWindow::deepLearningapply);
     connect(ui->savedButton, &QPushButton::clicked, this, &DeepLearningWindow::saveImage);
-	connect(ui->BackButton, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
+	//connect(ui->BackButton, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
 }
 void DeepLearningWindow::backToStartInterface() {
     this->close();
@@ -114,9 +120,8 @@ void DeepLearningWindow::repositionWidgets() {
 
     ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);  // aligné sous labelDropDeep
     ui->savedButton->setGeometry(c2, btnY, btnW, btnH);
-    ui->BackButton->setParent(this);
-    ui->BackButton->setGeometry(0, 0, 200, 40);
-    ui->BackButton->raise();
+    backBtn->setGeometry(0, 0, 200, 40);
+    backBtn->raise();
 }
 void DeepLearningWindow::saveImage() {
     QPixmap pix = ui->labelOutput->pixmap(Qt::ReturnByValue);
