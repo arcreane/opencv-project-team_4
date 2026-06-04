@@ -3,6 +3,8 @@
 #include "MorphologyWindow.h"
 #include "DragDropCannyEdge.h"
 #include "DeepLearningWindow.h"
+#include "HistogramEqualization.h"
+
 
 
 
@@ -51,8 +53,9 @@ void StartInterface::goToPanoramaInterface() {
 	hide();
 }
 void StartInterface::goToHistogramInterface() {
-	// Implement the logic to navigate to the Histogram Interface
-
+	HistogramEqualizationWindow* hist = new HistogramEqualizationWindow(this);
+	hist->show();
+	hide();
 }
 void StartInterface::goToVideoInterface() {
 	VideoProcessingWindow* video = new VideoProcessingWindow(this, nullptr);
