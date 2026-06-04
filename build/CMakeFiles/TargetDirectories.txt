@@ -1,0 +1,3 @@
+C:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4/build/CMakeFiles/MyImageEditor.dir
+C:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4/build/CMakeFiles/ZERO_CHECK.dir

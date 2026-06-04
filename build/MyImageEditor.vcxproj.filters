@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\POSTE\Desktop\ISEP\Projet mulimedia\opencv-project-team_4\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\POSTE\Desktop\ISEP\Projet mulimedia\opencv-project-team_4\src\thresholding.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\POSTE\Desktop\ISEP\Projet mulimedia\opencv-project-team_4\src\creative_effects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\POSTE\Desktop\ISEP\Projet mulimedia\opencv-project-team_4\src\interactive_tools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\POSTE\Desktop\ISEP\Projet mulimedia\opencv-project-team_4\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{5B0F1640-7C4B-3211-B090-7BFCBAF93E8A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
