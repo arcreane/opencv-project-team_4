@@ -68,6 +68,9 @@
     <ClCompile Include="HistogramEqualization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="imagedropLabel.h">
@@ -112,6 +115,9 @@
     <QtMoc Include="HistogramEqualization.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="mainwindow.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="MorphologyWindow.ui">
@@ -136,6 +142,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="HistogramEqualization.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

@@ -115,6 +115,7 @@
     <ClCompile Include="HistogramEqualization.cpp" />
     <ClCompile Include="GeometricTransform.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="PanoramaStitching.cpp" />
     <ClCompile Include="StartInterface.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />
@@ -131,6 +132,7 @@
   <ItemGroup>
     <QtUic Include="HistogramEqualization.ui" />
     <QtUic Include="GeometricTransform.ui" />
+    <QtUic Include="mainwindow.ui" />
     <QtUic Include="PanoramaStitching.ui" />
     <QtUic Include="StartInterface.ui" />
     <QtUic Include="VideoProcessing.ui" />
@@ -182,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="HistogramEqualization.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mainwindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

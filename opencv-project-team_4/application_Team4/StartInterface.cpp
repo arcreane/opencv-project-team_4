@@ -4,6 +4,7 @@
 #include "DragDropCannyEdge.h"
 #include "DeepLearningWindow.h"
 #include "HistogramEqualization.h"
+#include "mainwindow.h"
 
 
 
@@ -34,8 +35,9 @@ void StartInterface::goToMorphologyInterface() {
 	hide();
 }
 void StartInterface::goToThresholdingInterface() {
-	// Implement the logic to navigate to the Thresholding Interface
-
+	MainWindow* thresh = new MainWindow(nullptr);
+	thresh->show();
+		hide();
 }
 void StartInterface::goToCannyEdgeInterface() {
 	DragDropCannyEdge* canny = new DragDropCannyEdge(nullptr);
