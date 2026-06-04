@@ -43,7 +43,7 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 }
 void DragDropCannyEdge::backToStartInterface() {
 	this->close();
-	StartInterface* start = new StartInterface(this);
+	StartInterface* start = new StartInterface();
 	start->show();
 }
 DragDropCannyEdge::~DragDropCannyEdge() {

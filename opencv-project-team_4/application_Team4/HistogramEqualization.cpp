@@ -5,13 +5,15 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QString>
+#include "StartInterface.h"
 
 HistogramEqualizationWindow::HistogramEqualizationWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::HistogramEqualizationWindow)
+	, m_startInterface(nullptr)
 {
     ui->setupUi(this);
-
+	applyStyles();
     setWindowTitle("Histogram Equalization");
 
     ui->clipLimitSlider->setRange(10, 80);      // displayed as 1.0 to 8.0
@@ -168,8 +170,9 @@ void HistogramEqualizationWindow::onSaveResult()
 
 void HistogramEqualizationWindow::onBack()
 {
-    emit backRequested();
-    close();
+    this->close();
+    StartInterface* start = new StartInterface(this);
+    start->show();
 }
 
 void HistogramEqualizationWindow::onClipLimitChanged(int value)
@@ -309,4 +312,179 @@ double HistogramEqualizationWindow::currentClipLimit() const
 int HistogramEqualizationWindow::currentTileGridSize() const
 {
     return std::max(2, ui->tileGridSizeSlider->value());
+}
+void HistogramEqualizationWindow::applyStyles()
+{
+    setStyleSheet(R"(
+QMainWindow { background-color: #0d0d1c; }
+QWidget#centralwidget { background-color: #0d0d1c; }
+
+QGroupBox {
+    color: #50508a;
+    font-family: 'Segoe UI';
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: 1px solid #1a1a38;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+}
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 4px;
+    color: #50508a;
+}
+
+QLabel {
+    color: #c0c0e0;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    background: transparent;
+}
+QLabel#originalImageLabel, QLabel#resultImageLabel {
+    background-color: #07070f;
+    border: 1px solid #1a1a38;
+    border-radius: 6px;
+    color: #30304c;
+    font-size: 14px;
+}
+QLabel#titleLabel {
+    color: #d0d0ff;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    background: transparent;
+}
+QLabel#statusLabel {
+    color: #8888aa;
+    background: #0a0a18;
+    border: 1px solid #1c1c38;
+    border-radius: 6px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+QSlider::groove:horizontal {
+    background: #1a1a38;
+    height: 4px;
+    border-radius: 2px;
+}
+QSlider::handle:horizontal {
+    background: #6060c0;
+    border: 1px solid #4040a0;
+    width: 14px;
+    height: 14px;
+    margin: -5px 0;
+    border-radius: 7px;
+}
+QSlider::handle:horizontal:hover { background: #8080e0; }
+QSlider::sub-page:horizontal {
+    background: #3838a0;
+    border-radius: 2px;
+}
+
+QPushButton {
+    background-color: #16162e;
+    color: #b0b0d0;
+    border: 1px solid #26264c;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+    font-weight: 500;
+}
+QPushButton:hover {
+    background-color: #20204a;
+    border-color: #3c3c8a;
+    color: #dcdcff;
+}
+QPushButton:pressed {
+    background-color: #0c0c20;
+    border-color: #5858b0;
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+QPushButton:disabled {
+    background-color: #0c0c18;
+    border-color: #141428;
+    color: #303050;
+}
+
+QPushButton#loadButton {
+    background-color: #0a2518;
+    border-color: #185a35;
+    color: #48c880;
+}
+QPushButton#loadButton:hover {
+    background-color: #103020;
+    border-color: #287a50;
+    color: #68e8a0;
+}
+
+QPushButton#globalEqualizationButton, QPushButton#claheButton {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #3838e8, stop:1 #8820d8);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+}
+QPushButton#globalEqualizationButton:hover, QPushButton#claheButton:hover {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0,
+        stop:0 #5050ff, stop:1 #a030f0);
+}
+
+QPushButton#resetButton {
+    background-color: #250a0a;
+    border-color: #5a1818;
+    color: #c84848;
+}
+QPushButton#resetButton:hover {
+    background-color: #301010;
+    border-color: #7a2828;
+    color: #e86868;
+}
+
+QPushButton#saveButton {
+    background-color: #0a1828;
+    border-color: #183868;
+    color: #4898d0;
+}
+QPushButton#saveButton:hover {
+    background-color: #101e32;
+    border-color: #285898;
+    color: #68b8f0;
+}
+
+QPushButton#backButton {
+    background-color: #181424;
+    border-color: #362850;
+    color: #8860b8;
+}
+QPushButton#backButton:hover {
+    background-color: #20182e;
+    border-color: #503878;
+    color: #a888d8;
+}
+
+QScrollBar:vertical {
+    background: #07070f; width: 6px; margin: 0; border-radius: 3px;
+}
+QScrollBar::handle:vertical {
+    background: #252558; border-radius: 3px; min-height: 20px;
+}
+QScrollBar::handle:vertical:hover { background: #3838a0; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+
+QScrollBar:horizontal {
+    background: #07070f; height: 6px; border-radius: 3px;
+}
+QScrollBar::handle:horizontal {
+    background: #252558; border-radius: 3px;
+}
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { width: 0; }
+    )");
 }

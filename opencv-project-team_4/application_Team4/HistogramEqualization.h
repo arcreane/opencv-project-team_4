@@ -5,7 +5,7 @@
 #include <QImage>
 #include <QLabel>
 #include <opencv2/opencv.hpp>
-
+class StartInterface;
 QT_BEGIN_NAMESPACE
 namespace Ui { class HistogramEqualizationWindow; }
 QT_END_NAMESPACE
@@ -33,9 +33,11 @@ private slots:
 
 private:
     Ui::HistogramEqualizationWindow *ui;
+    StartInterface* m_startInterface = nullptr;
 
     cv::Mat m_originalImage;
     cv::Mat m_resultImage;
+    void applyStyles();
 
     void updatePreview();
     void displayMatOnLabel(const cv::Mat &image, QLabel *label);
