@@ -1,0 +1,10 @@
+^C:\USERS\POSTE\DESKTOP\ISEP\PROJET MULIMEDIA\OPENCV-PROJECT-TEAM_4\BUILD\CMAKEFILES\33C85A2CF81C72B1B891BA4913F52E53\GENERATE.STAMP.RULE
+setlocal
+C:\mingw64\bin\cmake.exe "-SC:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4" "-BC:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/POSTE/Desktop/ISEP/Projet mulimedia/opencv-project-team_4/build/MyImageEditor.sln"
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

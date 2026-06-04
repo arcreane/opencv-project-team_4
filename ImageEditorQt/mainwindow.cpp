@@ -91,6 +91,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 MainWindow::~MainWindow() {}
 
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    if (!currentImage.isNull())
+        showImage(currentImage);
+}
+
 // ─── Auto-preview helper ──────────────────────────────────────────────────────
 
 // Called by every slider/combo — applies the current tab's effect live
@@ -416,11 +423,12 @@ void MainWindow::showImage(const QImage &img)
     QSize available = scrollArea->viewport()->size();
     QPixmap pix = QPixmap::fromImage(img);
 
-    if (pix.width() > available.width() || pix.height() > available.height())
-        pix = pix.scaled(available, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    // Fit inside viewport keeping aspect ratio, but never upscale beyond original
+    QSize target = pix.size().scaled(available, Qt::KeepAspectRatio);
+    if (target.width() > pix.width()) target = pix.size(); // don't upscale
 
-    imageLabel->setPixmap(pix);
-    imageLabel->resize(pix.size());
+    imageLabel->setPixmap(pix.scaled(target, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    imageLabel->resize(target);
 }
 
 void MainWindow::updateStatusBar()
