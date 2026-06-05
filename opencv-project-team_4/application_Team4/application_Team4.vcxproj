@@ -112,12 +112,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreativeEffectsWindow.cpp" />
     <ClCompile Include="HistogramEqualization.cpp" />
     <ClCompile Include="GeometricTransform.cpp" />
+    <ClCompile Include="InteractiveToolsWindow.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="PanoramaStitching.cpp" />
     <ClCompile Include="StartInterface.cpp" />
+    <ClCompile Include="ThresholdingWindow.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />
     <ClCompile Include="CannyFilter.cpp" />
     <ClCompile Include="ClosingFilter.cpp" />
@@ -186,7 +188,13 @@
     <QtMoc Include="HistogramEqualization.h" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="mainwindow.h" />
+    <QtMoc Include="ThresholdingWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="InteractiveToolsWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="CreativeEffectsWindow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
