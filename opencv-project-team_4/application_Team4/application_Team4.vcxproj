@@ -183,6 +183,9 @@
   <ItemGroup>
     <QtMoc Include="HistogramEqualization.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="glimpse_editor_logo_icon_170086.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
     <Import Project="$(QtMsBuild)\qt.targets" />

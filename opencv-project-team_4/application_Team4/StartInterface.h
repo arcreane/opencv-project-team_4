@@ -31,6 +31,7 @@ private slots:
 private:
     Ui::StartInterface* ui;
     QImage originalImage;
+	void applyStyles();  
    
 
 };
