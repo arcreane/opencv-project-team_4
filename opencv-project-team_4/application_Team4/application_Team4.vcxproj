@@ -112,11 +112,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CreativeEffectsWindow.cpp" />
     <ClCompile Include="HistogramEqualization.cpp" />
     <ClCompile Include="GeometricTransform.cpp" />
+    <ClCompile Include="InteractiveToolsWindow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PanoramaStitching.cpp" />
     <ClCompile Include="StartInterface.cpp" />
+    <ClCompile Include="ThresholdingWindow.cpp" />
     <ClCompile Include="VideoProcessing.cpp" />
     <ClCompile Include="CannyFilter.cpp" />
     <ClCompile Include="ClosingFilter.cpp" />
@@ -131,6 +134,7 @@
   <ItemGroup>
     <QtUic Include="HistogramEqualization.ui" />
     <QtUic Include="GeometricTransform.ui" />
+    <QtUic Include="mainwindow.ui" />
     <QtUic Include="PanoramaStitching.ui" />
     <QtUic Include="StartInterface.ui" />
     <QtUic Include="VideoProcessing.ui" />
@@ -184,6 +188,13 @@
     <QtMoc Include="HistogramEqualization.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="ThresholdingWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="InteractiveToolsWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="CreativeEffectsWindow.h" />
     <Image Include="glimpse_editor_logo_icon_170086.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
