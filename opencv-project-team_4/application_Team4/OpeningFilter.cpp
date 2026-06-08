@@ -6,7 +6,8 @@
 OpeningOperation::OpeningOperation(Ui_Morphology* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
-
+//Function to show the opening filter interface, hiding other filter options 
+// and displaying relevant controls for the opening operation.
 void OpeningOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->ErosionFilter->setVisible(false);
@@ -27,7 +28,8 @@ void OpeningOperation::showInterface() {
     ui->kernelSizeBox->setVisible(true);
     ui->applyButton->setVisible(true);
 }
-
+//Function to hide the opening filter interface, restoring the main morphology options
+// and clearing any results or selections related to the opening operation.
 void OpeningOperation::hideInterface() {
     ui->iterationNumberBox->setVisible(false);
     ui->iterationLabel->setVisible(false);
@@ -49,11 +51,12 @@ void OpeningOperation::hideInterface() {
 	ui->savedButton->setVisible(false);
 
 }
-
+//function to apply the opening operation to the input image based on the user's selections for structuring element type,
 cv::Mat OpeningOperation::applyOpening(const cv::Mat& inputImage) {
     ui->savedButton->setVisible(true);
 
     int openingType = 0;
+    //definition of the type of SE
     if (ui->rectMorph->isChecked()) {
         openingType = cv::MORPH_RECT;
     }
@@ -65,8 +68,10 @@ cv::Mat OpeningOperation::applyOpening(const cv::Mat& inputImage) {
     }
     int kernelSize = ui->kernelSizeBox->value();
     int iteration = ui->iterationNumberBox->value();
+    //getting the structure element
     cv::Mat element = cv::getStructuringElement(openingType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
     cv::Mat outputImage;
+    //apply the opening filter, ATTENTION: put the parameter MORPH_OPEN otherwise no opening is computed
     cv::morphologyEx(inputImage, outputImage, cv::MORPH_OPEN, element, cv::Point(-1, -1), iteration);
 
     return outputImage;

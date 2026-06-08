@@ -7,6 +7,9 @@ CannyOperation::CannyOperation(Ui_CannyEdge* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
 
+//Function to activate the interface of canny edge filter, 
+//making the necessary widgets visible and changing the text of the button to "Back"
+//to allow users to return to the previous interface.
 void CannyOperation::showInterface() {
 	ui->apertureBox->setVisible(true);
 	ui->cannyFilterButton->setText("Back");
@@ -18,7 +21,9 @@ void CannyOperation::showInterface() {
 	ui->applyCannyFilterButton->setVisible(true);
    
 }
-
+//Function to deactivate the interface of canny edge filter, 
+//making the necessary widgets invisible and changing the text of the button to "Canny Edge Filter"
+//to allow users to return to the previous interface.
 void CannyOperation::hideInterface() {
     ui->apertureBox->setVisible(false);
     ui->apertureLabel->setVisible(false);
@@ -35,6 +40,9 @@ void CannyOperation::hideInterface() {
 	ui->savedButton->setVisible(false);
 }
 
+//Function to apply the Canny edge filter to the input image using the parameters specified by the user through the interface.
+//The parameters are the lower and higher thresholds for the hysteresis procedure and the aperture size for the Sobel operator. 
+// The function returns the processed image with the detected edges.
 cv::Mat CannyOperation::applyCannyEdgeFilter(const cv::Mat& inputImage) {
 
     int lowerThreshold = ui->lowerTslider->value();

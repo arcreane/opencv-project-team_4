@@ -6,7 +6,8 @@
 ClosingOperation::ClosingOperation(Ui_Morphology* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
-
+//Function to show the closing filter interface, hiding other filter options 
+// and displaying relevant controls for the closing operation.
 void ClosingOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
@@ -27,7 +28,8 @@ void ClosingOperation::showInterface() {
     ui->kernelSizeBox->setVisible(true);
     ui->applyButton->setVisible(true);
 }
-
+//Function to hide the closing filter interface, restoring the main morphology options
+// and clearing any results or selections related to the closing operation.
 void ClosingOperation::hideInterface() {
     ui->iterationNumberBox->setVisible(false);
     ui->iterationLabel->setVisible(false);
@@ -49,9 +51,15 @@ void ClosingOperation::hideInterface() {
     ui->savedButton->setVisible(false);
 }
 
+//Function to apply the closing operation to the input image based on the user's selections for structuring element type, 
+// kernel size, and number of iterations
+// The function uses OpenCV's morphologyEx function to perform the closing operation and returns the processed image.
+
 cv::Mat ClosingOperation::applyClosing(const cv::Mat& inputImage) {
 	ui->savedButton->setVisible(true);
     int closingType = 0;
+
+    //type of structuring element
     if (ui->rectMorph->isChecked()) {
         closingType = cv::MORPH_RECT;
     }
@@ -63,8 +71,12 @@ cv::Mat ClosingOperation::applyClosing(const cv::Mat& inputImage) {
     }
     int kernelSize = ui->kernelSizeBox->value();
     int iteration = ui->iterationNumberBox->value();
+
+    //creation of the structuring element
     cv::Mat element = cv::getStructuringElement(closingType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
     cv::Mat outputImage;
+
+	//applying the closing operation using the specified parameters: IMPORTANT : MORPH_CLOSE
     cv::morphologyEx(inputImage, outputImage, cv::MORPH_CLOSE, element, cv::Point(-1, -1), iteration);
 
     return outputImage;

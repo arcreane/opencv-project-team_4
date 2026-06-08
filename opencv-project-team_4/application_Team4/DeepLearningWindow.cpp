@@ -13,20 +13,24 @@
 #include <QMessageBox>
 #include <QApplication>
 #include "StartInterface.h"
+//end of all the include necessary for the deep learning window
+// Important: use of the QDebug in order to understand where the program is at, and to check if the files are correctly loaded (weights, cfg, names)
 
 DeepLearningWindow::DeepLearningWindow(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::DeepLearningWindow) {
 	ui->setupUi(this);
-
+	//to make the window resizable and to apply the styles to the different widgets
 	applyStyles();
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     centralWidget()->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
-    backBtn = new QPushButton("Back", this);  // parent = this, pas centralWidget
+    backBtn = new QPushButton("Back", this); 
     backBtn->setObjectName("BackButton");
     backBtn->setGeometry(0, 0, 100, 40);
     backBtn->raise();
     connect(backBtn, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
     resize(1000, 700);
+
+    //setting of the interface for deep learning
 	ui->labelOutput->setVisible(false);
     ui->labelDropDeep->setGrayscaleOnly(false);
     ui->labelDropDeep->setFixPosition(true);
@@ -37,6 +41,7 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
     QString cfgPath = QDir::currentPath() + "/yolov3.cfg";
     QString namesPath = QDir::currentPath() + "/coco.names";
 
+    //checking for the files if they are present or not
     qDebug() << "Looking for weights:" << weightsPath;
     qDebug() << "weights exists:" << QFile::exists(weightsPath);
     qDebug() << "cfg exists:" << QFile::exists(cfgPath);
@@ -60,20 +65,19 @@ DeepLearningWindow::DeepLearningWindow(QWidget* parent)
         );
         return;
     }
+
+	//if file OK, we load the class names and we connect the signals for the drop and the button
     qDebug() << "YOLOv3 loaded OK";
     loadClassNames(namesPath.toStdString());
 
     qDebug() << ui->labelDropDeep->metaObject()->className();
-	connect(ui->labelDropDeep, &ImageDropLabel::imageDropped,
-		this, [this](const QImage& img) {
-			originalImage = img;
-			ui->detectObjectDeep->setEnabled(true);
-		});
-
+	//use of the class ImageDropLabel in order to get the image dropped and to enable the button for the detection and make it readable by openCV
+	connect(ui->labelDropDeep, &ImageDropLabel::imageDropped,this, [this](const QImage& img) {originalImage = img;ui->detectObjectDeep->setEnabled(true);});
 	connect(ui->detectObjectDeep, &QPushButton::clicked,this, &DeepLearningWindow::deepLearningapply);
     connect(ui->savedButton, &QPushButton::clicked, this, &DeepLearningWindow::saveImage);
-	//connect(ui->BackButton, &QPushButton::clicked, this, &DeepLearningWindow::backToStartInterface);
 }
+
+//Go back to the interface of the start, and close the current window
 void DeepLearningWindow::backToStartInterface() {
     this->close();
     StartInterface* start = new StartInterface(this);
@@ -85,18 +89,21 @@ void DeepLearningWindow::resizeEvent(QResizeEvent* event) {
     repositionWidgets();
 }
 
+//Function to set the different geomtry of the widgets in order to make the interface responsive and to adapt to the size of the window
 void DeepLearningWindow::repositionWidgets() {
+	//Base values for the geometry
     int Width = this->width();   
     int Height = this->height();
 
     int marginX = Width * 0.04;
     int marginY = Height * 0.05;
     int titleWidth = ui->titleDeepLearning->width();
-    // Titre — pleine largeur
+
+    // Title
     int titleH = Height * 0.07;
     int usableW = Width - 2 * marginX;
     int usableH = Height - titleH - marginY * 2;
-    // 2 colonnes égales : drop | output
+	//Columns for drag and drop and output
     int gap = Width * 0.02;
     int colW = (usableW - gap) / 2;
     int btnH = usableH * 0.08;
@@ -105,24 +112,23 @@ void DeepLearningWindow::repositionWidgets() {
 
     int c1 = marginX;
     int c2 = c1 + colW + gap;
-    
+	// Set geometry for labels and buttons. Attention: setGeometry (x, y, width, height)
     ui->titleDeepLearning->setGeometry(c2-2*c1, marginY * 0.3, titleWidth, titleH);
     ui->titleDeepLearning->setAlignment(Qt::AlignCenter);
-
     ui->labelDropDeep->setGeometry(c1, rowY, colW, dropH);
-    //ui->labelDropDeep->setFixedSize(colW, dropH);
-
-
     ui->labelOutput->setGeometry(c2, rowY, colW, dropH);
-    //ui->labelOutput->setFixedSize(colW, dropH);
-    int btnW = colW;  // même largeur que les labels
+
+    int btnW = colW;  
     int btnY = rowY + dropH + gap;
 
-    ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);  // aligné sous labelDropDeep
+	//Elements shown after the detection
+    ui->detectObjectDeep->setGeometry(c1, btnY, btnW, btnH);  
     ui->savedButton->setGeometry(c2, btnY, btnW, btnH);
     backBtn->setGeometry(0, 0, 200, 40);
     backBtn->raise();
 }
+
+//Function to save the image with the detection, using a QFileDialog to choose the location and the name of the file
 void DeepLearningWindow::saveImage() {
     QPixmap pix = ui->labelOutput->pixmap(Qt::ReturnByValue);
     if (!pix.isNull()) {
@@ -138,15 +144,19 @@ void DeepLearningWindow::saveImage() {
 DeepLearningWindow::~DeepLearningWindow() {
 	delete ui;
 }
+
+//Function to load the class names from the coco.names file, and store them in a vector of strings
 void DeepLearningWindow::loadClassNames(const std::string& path) {
     std::ifstream file(path);
     std::string line;
+	// Check if the file is open, put inside the vector each line of the file, i go through all the lines of the file and I push them in the vector classNames, then I print the number of classes loaded
     while (std::getline(file, line))
         classNames.push_back(line);
     qDebug() << "Loaded" << classNames.size() << "classes";
 }
   
 void DeepLearningWindow::deepLearningapply() {
+	//setting up the interface for the detection, and checking if the image and the model are loaded
     ui->labelOutput->setVisible(false);
     ui->labelOutput->clear();
     ui->labelOutput->setText("");
@@ -155,31 +165,38 @@ void DeepLearningWindow::deepLearningapply() {
 	ui->detectObjectDeep->setEnabled(false);
 	ui->detectObjectDeep->setText("Charging....");
 	ui->savedButton->setVisible(true);
+
+	// Process events to update the UI before heavy computation
     QApplication::processEvents();
+
     // QImage → cv::Mat BGR
     QImage rgb = originalImage.convertToFormat(QImage::Format_RGB888);
-    cv::Mat imgMat(rgb.height(), rgb.width(), CV_8UC3,
-        const_cast<uchar*>(rgb.bits()), rgb.bytesPerLine());
+    cv::Mat imgMat(rgb.height(), rgb.width(), CV_8UC3,const_cast<uchar*>(rgb.bits()), rgb.bytesPerLine());
     cv::Mat bgrMat;
     cv::cvtColor(imgMat, bgrMat, cv::COLOR_RGB2BGR);
 
-    // Blob pour YOLOv3 (416x416)
-    cv::Mat blob = cv::dnn::blobFromImage(bgrMat, 1.0 / 255.0,
-        cv::Size(416, 416), cv::Scalar(), true, false);
+	// Blob for YOLOv3 (416x416), using the dnn module of OpenCV, and set it as input for the network
+    cv::Mat blob = cv::dnn::blobFromImage(bgrMat, 1.0 / 255.0,cv::Size(416, 416), cv::Scalar(), true, false);
     net.setInput(blob);
 
-    // Récupère les noms des couches de sortie
+    // Retrieve the names of the output layers
     std::vector<std::string> outLayerNames = net.getUnconnectedOutLayersNames();
     std::vector<cv::Mat> outputs;
+
+	// Forward pass through the network, and set the button to "Detect new object" and enable it, and make the save button visible, then reposition the widgets
     net.forward(outputs, outLayerNames);
     ui->detectObjectDeep->setEnabled(true);
     ui->detectObjectDeep->setText("Detect new object");
     ui->savedButton->setVisible(true);
     repositionWidgets();
-    // Parse les détections
+
+	// Parse les détections, definition of the boxes to visualize the results, 
+    // the scores and the classIds, and setting of the thresholds for the confidence and for the non-maximum suppression
     std::vector<cv::Rect> boxes;
     std::vector<float>    scores;
     std::vector<int>      classIds;
+
+	//float confThreshold = 0.5f; // confidence threshold
     float confThreshold = 0.5f;
     float nmsThreshold = 0.45f;
 
@@ -189,8 +206,11 @@ void DeepLearningWindow::deepLearningapply() {
             cv::Mat classMat(1, (int)classNames.size(), CV_32F, data + 5);
             cv::Point classId;
             double maxScore;
+			// Get the class with the highest score for this detection
             cv::minMaxLoc(classMat, nullptr, &maxScore, nullptr, &classId);
 
+			//if the detection and its score is higher then the confident, print the boxes and the scores, and the classIds,
+            // and push them in the vector of boxes, scores and classIds
             if (data[4] * maxScore >= confThreshold) {
                 int cx = (int)(data[0] * bgrMat.cols);
                 int cy = (int)(data[1] * bgrMat.rows);
@@ -204,17 +224,17 @@ void DeepLearningWindow::deepLearningapply() {
     }
     QRect dropGeom = ui->labelDropDeep->geometry();
 
+	// Apply non-maximum suppression to filter overlapping boxes
     std::vector<int> indices;
     cv::dnn::NMSBoxes(boxes, scores, confThreshold, nmsThreshold, indices);
+    //print the error if no detection
     if (indices.empty()) {
-
         ui->labelOutput->setVisible(true);
         ui->labelOutput->setText(
             "No detection found.\nTry with another picture."
         );
 
         ui->labelOutput->setAlignment(Qt::AlignCenter);
-
         ui->labelOutput->setStyleSheet(
             "border: 2px solid red;"
             "color: red;"
@@ -228,16 +248,15 @@ void DeepLearningWindow::deepLearningapply() {
             dropGeom.width() + (int)(this->width() * 0.02),
             dropGeom.height()
 		); repositionWidgets();
-        
-
         return;
     }
-    // Dessine les résultats
+
+	//Otherswise, we draw the boxes and the labels on the image, and we display the result in the output label
     cv::Mat result = bgrMat.clone();
     for (int idx : indices) {
         cv::rectangle(result, boxes[idx], cv::Scalar(0, 255, 0), 2);
-        std::string label = classNames[classIds[idx]]
-            + " " + std::to_string((int)(scores[idx] * 100)) + "%";
+        //print label + score
+        std::string label = classNames[classIds[idx]]+ " " + std::to_string((int)(scores[idx] * 100)) + "%";
         cv::putText(result, label,
             cv::Point(boxes[idx].x, boxes[idx].y - 5),
             cv::FONT_HERSHEY_SIMPLEX, 0.6,
@@ -246,9 +265,10 @@ void DeepLearningWindow::deepLearningapply() {
 
     // Affiche
     cv::Mat rgbResult;
+	// Convert BGR to RGB for QImage
     cv::cvtColor(result, rgbResult, cv::COLOR_BGR2RGB);
-    QImage qResult(rgbResult.data, rgbResult.cols, rgbResult.rows,
-        rgbResult.step, QImage::Format_RGB888);
+	// Create QImage from the result, from CV to QImage in order to send it to the label Output
+    QImage qResult(rgbResult.data, rgbResult.cols, rgbResult.rows,rgbResult.step, QImage::Format_RGB888);
 
 
     ui->labelOutput->setGeometry(
@@ -259,16 +279,16 @@ void DeepLearningWindow::deepLearningapply() {
     );
     ui->labelOutput->setVisible(true);
 
-    QPixmap pix = QPixmap::fromImage(qResult.copy()).scaled(
-        ui->labelOutput->size(),
+	// Scale the pixmap to fit the label while keeping aspect ratio
+    QPixmap pix = QPixmap::fromImage(qResult.copy()).scaled(ui->labelOutput->size(),
         Qt::KeepAspectRatio,
         Qt::SmoothTransformation
     );
     ui->labelOutput->setPixmap(pix);
 
-    // Restaurer après setPixmap
+	// Reposition widgets after processing to ensure the output label is correctly placed, especially if the window was resized during processing
     QTimer::singleShot(0, this, [this, dropGeom]() {
-        ui->labelDropDeep->setGeometry(dropGeom);  // remet labelDropDeep à sa place
+        ui->labelDropDeep->setGeometry(dropGeom);  
         ui->labelOutput->setGeometry(
             dropGeom.x() + dropGeom.width() + (int)(this->width() * 0.02),
             dropGeom.y(),
@@ -277,6 +297,8 @@ void DeepLearningWindow::deepLearningapply() {
         );
         });
 }
+
+//CSS
 void DeepLearningWindow::applyStyles() {
     setStyleSheet(R"(
 

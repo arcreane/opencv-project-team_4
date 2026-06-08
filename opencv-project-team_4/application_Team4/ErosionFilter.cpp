@@ -6,7 +6,8 @@
 ErosionOperation::ErosionOperation(Ui_Morphology* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
-
+//Function to show the erosion filter interface, hiding other filter options 
+// and displaying relevant controls for the erosion operation.
 void ErosionOperation::showInterface() {
     ui->DilationFilter->setVisible(false);
     ui->OpeningFilter->setVisible(false);
@@ -27,6 +28,8 @@ void ErosionOperation::showInterface() {
     ui->ErosionFilter->setText("Back");
 }
 
+//Function to hide the erosion filter interface, restoring the main morphology options
+// and clearing any results or selections related to the erosion operation.
 void ErosionOperation::hideInterface() {
     ui->iterationNumberBox->setVisible(false);
     ui->iterationLabel->setVisible(false);
@@ -48,9 +51,11 @@ void ErosionOperation::hideInterface() {
     ui->savedButton->setVisible(false);
 }
 
+//function to apply the erosion operation to the input image based on the user's selections for structuring element type,
     cv::Mat ErosionOperation:: applyErosion(const cv::Mat& inputImage) {
 		ui->savedButton->setVisible(true);
         int erosionType = 0;
+        //defintion of the type of the structuring element
         if (ui->rectMorph->isChecked()) {
             erosionType = cv::MORPH_RECT;
         } else if (ui->ellipseMorph->isChecked()) {
@@ -60,8 +65,10 @@ void ErosionOperation::hideInterface() {
         }
         int kernelSize = ui->kernelSizeBox->value();
         int iteration = ui->iterationNumberBox->value();
+        //getting the structuring element
         cv::Mat element = cv::getStructuringElement(erosionType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
         cv::Mat outputImage;
+        //apply the erosion operation on the input image
         cv::erode(inputImage, outputImage, element, cv::Point(-1, -1), iteration);
 
         return outputImage;

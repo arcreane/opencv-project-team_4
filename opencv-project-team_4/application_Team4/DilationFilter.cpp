@@ -7,6 +7,8 @@ DilationOperation::DilationOperation(Ui_Morphology* ui, QObject* parent)
     : QObject(parent), ui(ui) {
 }
 
+//Function to show the dilation filter interface, hiding other filter options 
+// and displaying relevant controls for the dilation operation.
 void DilationOperation::showInterface() {
 	ui->DilationFilter->setText("Back");
     ui->ErosionFilter->setVisible(false);
@@ -28,6 +30,9 @@ void DilationOperation::showInterface() {
     ui->applyButton->setVisible(true);
 }
 
+
+//Function to hide the dilation filter interface, restoring the main morphology options
+// and clearing any results or selections related to the dilation operation.
 void DilationOperation::hideInterface() {
     ui->iterationNumberBox->setVisible(false);
     ui->iterationLabel->setVisible(false);
@@ -50,10 +55,12 @@ void DilationOperation::hideInterface() {
 
 }
 
+//function to apply the dilation operation to the input image based on the user's selections for structuring element type,
 cv::Mat DilationOperation::applyDilation(const cv::Mat& inputImage) {
     ui->savedButton->setVisible(true);
 
     int dilationType = 0;
+    //Type of structuring element
     if (ui->rectMorph->isChecked()) {
         dilationType = cv::MORPH_RECT;
     }
@@ -65,8 +72,11 @@ cv::Mat DilationOperation::applyDilation(const cv::Mat& inputImage) {
     }
     int kernelSize = ui->kernelSizeBox->value();
     int iteration = ui->iterationNumberBox->value();
+	//get the structuring element based on the selected type and kernel size, then apply dilation to the input image using OpenCV's dilate function, returning the processed image.
     cv::Mat element = cv::getStructuringElement(dilationType, cv::Size(2 * kernelSize + 1, 2 * kernelSize + 1), cv::Point(kernelSize, kernelSize));
     cv::Mat outputImage;
+
+    //Compute the dilation
     cv::dilate(inputImage, outputImage, element, cv::Point(-1, -1), iteration);
 
     return outputImage;

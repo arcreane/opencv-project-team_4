@@ -7,15 +7,15 @@
 #include <QDebug>
 DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	: QMainWindow(parent), ui(new Ui::CannyEdge) {
+	//preparing the interface with the right dimension and style
 	ui->setupUi(this);
 	applyStyles();
 	cannyOp = new CannyOperation(ui, this);
-	resize(1000, 700);  // taille de départ raisonnable
-
-	// Retirer le layout du .ui pour reprendre le contrôle
+	resize(1000, 700);  
 	delete centralWidget()->layout();
-
 	repositionWidgets();
+
+	//loading the initial interface with the right settings and connections
 	ui->dragAndDrop->setStyleSheet("border: 2px inset gray;");
 	ui->cannyFilterButton->setEnabled(false);
 	ui->lowerTslider->setVisible(false);
@@ -28,12 +28,9 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	ui->applyCannyFilterButton->setVisible(false);
 	ui->dragAndDrop->setGrayscaleOnly(false);
 	ui->savedButton->setVisible(false);
-	connect(ui->dragAndDrop, &ImageDropLabel::imageDropped,
-		this, [this](const QImage& img) {
-			originalImage = img;
-			ui->cannyFilterButton->setEnabled(true);
-			
-		});
+
+	//use of the class ImageDropLabel to handle the drag and drop of images and connect it to the right slots to update the interface accordingly
+	connect(ui->dragAndDrop, &ImageDropLabel::imageDropped,this, [this](const QImage& img) {originalImage = img;ui->cannyFilterButton->setEnabled(true);});
 	connect(ui->cannyFilterButton, &QPushButton::clicked, this, &DragDropCannyEdge::showCannyInterface);
 	connect(ui->applyCannyFilterButton, &QPushButton::clicked, this, &DragDropCannyEdge::onApplyCannyClicked);
 	connect(ui->lowerTslider, &QSlider::valueChanged,this, &DragDropCannyEdge::onSliderChanged);
@@ -41,6 +38,8 @@ DragDropCannyEdge::DragDropCannyEdge(QWidget* parent)
 	connect(ui->savedButton, &QPushButton::clicked, this, &DragDropCannyEdge::saveImage);
 	connect(ui->BackButton, &QPushButton::clicked, this, &DragDropCannyEdge::backToStartInterface);
 }
+
+//Function to return to the start interface when the back button is clicked, closing the current interface and opening a new instance of the start interface.
 void DragDropCannyEdge::backToStartInterface() {
 	this->close();
 	StartInterface* start = new StartInterface();
@@ -54,7 +53,10 @@ void DragDropCannyEdge::resizeEvent(QResizeEvent* event) {
 	repositionWidgets();
 }
 
+
+//Function to reposition the widgets in the interface based on the current size of the window, ensuring a responsive design that adapts to different window sizes while maintaining a consistent layout and spacing between elements.
 void DragDropCannyEdge::repositionWidgets() {
+	//base elements
 	int Width = this->width();
 	int Height = this->height();
 
@@ -63,15 +65,18 @@ void DragDropCannyEdge::repositionWidgets() {
 	int marginX = Width * 0.04;
 	int marginY = Height * 0.05;
 
+	//title
 	int titleH = Height * 0.07;
 	int usableW = Width - 2 * marginX;
 	int usableH = Height - titleH - marginY * 2;
 
+	//split the interface into columns and rows
 	int column1 = usableW * 0.25;
 	int column2 = usableW * 0.42;
 	int column3 = usableW * 0.28;
 	int gap = Width * 0.015;
 
+	//calculate the positions of the columns and rows
 	int c1 = marginX;
 	int c2 = c1 + column1 + gap;
 	int c3 = c2 + column2 + gap;
@@ -80,7 +85,7 @@ void DragDropCannyEdge::repositionWidgets() {
 	int dropH = usableH * 0.78;
 	int btnH = usableH * 0.08;
 
-	// Titre centré
+	// Title + lables centred
 	ui->titleLabelCanny->setGeometry(c2 + marginX, marginY * 0.3, usableW, titleH);
 	ui->titleLabelCanny->setAlignment(Qt::AlignCenter);
 	ui->infoLabel->setGeometry(0, marginY * 0.3 + titleH, usableW, titleH * 0.6);
@@ -90,11 +95,13 @@ void DragDropCannyEdge::repositionWidgets() {
 	ui->dragAndDrop->setGeometry(c2, rowY, column2, dropH);
 	ui->resultCannyLabel->setGeometry(c3, rowY, column3, dropH);
 
-	// 3 boutons même taille en bas
+	// 3 buttons same size at the bottom
 	int totalBtnW = c3 + column3 - c1;  
 	int btnW = (totalBtnW - 2 * gap) / 3;
 	int btnY = rowY + dropH + gap;
 
+	// Adjust button visibility and positions based on the resizeBouton flag, in order to follow the same structure of the interface when the canny filter options are shown or hidden
+	//ANd coherence with the morphology window
 	if (resizeBouton) {
 		ui->cannyFilterButton->setGeometry(c1 + btnW + gap, btnY, btnW, btnH);
 		ui->applyCannyFilterButton->setVisible(false);
@@ -106,6 +113,7 @@ void DragDropCannyEdge::repositionWidgets() {
 		ui->savedButton->setGeometry(c1 + (btnW + gap) * 2, btnY, btnW, btnH);
 	}
 
+	//position of the parameters
 	int step = dropH / 7;
 	ui->lowerTlabel->setGeometry(c1, rowY + step * 0, column1, btnH);
 	ui->lowerTslider->setGeometry(c1, rowY + step * 1, column1, btnH);
@@ -117,7 +125,7 @@ void DragDropCannyEdge::repositionWidgets() {
 	ui->BackButton->setStyleSheet("font-family: 'Segoe UI'; font-size: 14px; font-weight: bold; color: #d0d0ff; background-color: #1a1a2e; border: 2px solid #d0d0ff; border-radius: 5px;");
 }
 
-
+//go to Canny interface when the button is clicked, showing the parameters and the apply button, and hiding the canny filter button, and repositioning the widgets accordingly to maintain a coherent layout.
 void DragDropCannyEdge::showCannyInterface() {
 	if (ui->cannyFilterButton->text() == "Canny Edge Filter") {
 			cannyOp->showInterface();
@@ -143,27 +151,37 @@ void DragDropCannyEdge::saveImage() {
 	}
 }
 
+//Convert the input image from QImage to cv::Mat format, ensuring that the image is in grayscale format (CV_8UC1) which is required for the Canny edge detection algorithm, and returning a clone of the resulting cv::Mat to ensure that the data is properly managed and can be safely modified without affecting the original QImage.
 cv::Mat QImageToMatCanny(const QImage& img) {
 	QImage gray = img.convertToFormat(QImage::Format_Grayscale8);
 	return cv::Mat(gray.height(), gray.width(),CV_8UC1, const_cast<uchar*>(gray.bits()),
 		gray.bytesPerLine()).clone();
 }
 
+//Convert the input image from cv::Mat to QImage format, ensuring that the image is in grayscale format (QImage::Format_Grayscale8)
+// which is required for displaying the Canny edge detection results, and returning a copy of the resulting
+// QImage to ensure that the data is properly managed and can be safely modified without affecting the original cv::Mat.
 QImage MatToQImageCanny(const cv::Mat& mat) {
 	return QImage(mat.data, mat.cols, mat.rows,
 		mat.step, QImage::Format_Grayscale8).copy();
 }
+
+//Apply the canny edge detection Algo
 void DragDropCannyEdge::onApplyCannyClicked() {
 	if (originalImage.isNull()) return;
 	cv::Mat output;
+	//conversion
 	cv::Mat input = QImageToMatCanny(originalImage);
 	inputImage = input.clone();
+
+	//use of the canny operation defined in CannyFilter.cpp to apply the canny edge detection algorithm to the input image, and storing the result in the output cv::Mat.
 	output = cannyOp->applyCannyEdgeFilter(input);
-	cannyAppliedOnce = true;
+	cannyAppliedOnce = true; // to make more easier the update of the image with the canging of the parameters
 	QImage  result = MatToQImageCanny(output);
 	ui->resultCannyLabel->setVisible(true);
 	ui->resultCannyLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
+	//show the results
 	QPixmap pix = QPixmap::fromImage(result).scaled(
 		ui->resultCannyLabel->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
@@ -173,10 +191,14 @@ void DragDropCannyEdge::onApplyCannyClicked() {
 	ui->resultCannyLabel->repaint();
 	ui->resultCannyLabel->update();
 }
+
+//make the slider dynamics if canny edge has been applied once
 void DragDropCannyEdge::onSliderChanged() {
 	if (!cannyAppliedOnce) return;
 	onApplyCannyClicked();
 }
+
+//CSS
 void DragDropCannyEdge::applyStyles() {
 	setStyleSheet(R"(
 QMainWindow { background-color: #0d0d1c; }

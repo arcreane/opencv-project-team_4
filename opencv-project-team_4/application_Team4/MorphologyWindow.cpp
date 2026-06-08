@@ -8,15 +8,14 @@
 #include <QDebug>
 MorphologyWindow::MorphologyWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::Morphology) {
-
+	//setting the starting interface for the morphology operations, with the image drop area and filter selection buttons.
 	ui->setupUi(this);
 	applyStyles();
-	resize(1000, 700);  // taille de départ raisonnable
-
-	// Retirer le layout du .ui pour reprendre le contrôle
+	resize(1000, 700);  
 	delete centralWidget()->layout();
 
 	repositionWidgets();
+	//defintion of the possible available buttons and picking the operarion
 	erosionOp = new ErosionOperation(ui, this);
 	dilationOp = new DilationOperation(ui, this);
 	openingOp = new OpeningOperation(ui, this);
@@ -37,16 +36,15 @@ MorphologyWindow::MorphologyWindow(QWidget* parent)
 	ui->savedButton->setVisible(false);
 	ui->label->setGrayscaleOnly(true);
 	ui->LabelTitle->setAlignment(Qt::AlignCenter);
-
-	connect(ui->label, &ImageDropLabel::imageDropped,
-		this, [this](const QImage& img) {
-			originalImage = img;
+	//use of the ImageDropLabel class to allow users to drag and drop an image into the application, enabling the filter options once an image is loaded.
+	connect(ui->label, &ImageDropLabel::imageDropped,this, [this](const QImage& img) {originalImage = img;
 			ui->ErosionFilter->setEnabled(true);
 			ui->DilationFilter->setEnabled(true);
 			ui->OpeningFilter->setEnabled(true);
 			ui->ClosingFilter->setEnabled(true);
 		});
 	ui->applyButton->setVisible(false);
+	//definition of the tasks
 	connect(ui->ErosionFilter, &QPushButton::clicked, this, &MorphologyWindow::createErosionInterface);
 	connect(ui->DilationFilter, &QPushButton::clicked, this, &MorphologyWindow::createDilationInterface);
 	connect(ui->OpeningFilter, &QPushButton::clicked, this, &MorphologyWindow::createOpeningInterface);
@@ -63,7 +61,7 @@ void MorphologyWindow::backToStartInterface() {
 	start->show();
 }
 
-
+//Function to save the image in the PC after the transformation, not possible to save the original image
 void MorphologyWindow::saveImage() {
 	QPixmap pix = ui->resultLabel->pixmap(Qt::ReturnByValue);
 	if (!pix.isNull()) {
@@ -80,27 +78,29 @@ void MorphologyWindow::resizeEvent(QResizeEvent* event) {
 	QMainWindow::resizeEvent(event);
 	repositionWidgets();
 }
-
+//Function to make it responsive and try to adapt it to the resize of the window, with a dynamic repositioning of the widgets based on the current size of the window,
+// using proportions to maintain a consistent layout.
 void MorphologyWindow::repositionWidgets() {
+	//basic proportion
 	int Width = this->width();
 	int Height = this->height();
 
-	int marginX = Width * 0.08;   // marge horizontale
-	int marginY = Height * 0.08;   // marge verticale haute
+	int marginX = Width * 0.08;  
+	int marginY = Height * 0.08; 
 
+	//title
 	int titleH = Height * 0.06;
 	ui->LabelTitle->setGeometry(marginX, Height * 0.01, Width - 2 * marginX, titleH);
 	ui->LabelTitle->setAlignment(Qt::AlignCenter);
 
 	int usableW = Width - 2 * marginX;
 	int usableH = Height - 2 * marginY;
-	// 3 colonnes : 30% | 40% | 30%
+	// 3 columns : 30% | 40% | 30%
 	int column1 = usableW * 0.30;
 	int column2 = usableW * 0.40;
 	int column3 = usableW * 0.30;
 	int gap = Width * 0.01;
 
-	// Positions horizontales des colonnes
 	int c1 = marginX;
 	int c2 = c1 + column1 + gap;
 	int c3 = c2 + column2 + gap;
@@ -108,7 +108,7 @@ void MorphologyWindow::repositionWidgets() {
 	int dropH = usableH * 0.80;
 	int btnH = usableH * 0.07;
 	int rowY = marginY;
-
+	//defintion of the output label and the button to save and to apply the modification, with a dynamic positioning based on the current size of the window.
 	ui->label->setGeometry(c2, rowY, column2, dropH);
 	ui->resultLabel->setGeometry(c3, rowY, column3, dropH);
 	ui->applyButton->setGeometry(
@@ -121,7 +121,7 @@ void MorphologyWindow::repositionWidgets() {
 		rowY + dropH + gap * 2,
 		column1, btnH
 	);
-	//SetGeometry(x, y, width, height)
+	//SetGeometry(x, y, width, height) : Button
 	ui->ErosionFilter->setGeometry(c1, rowY, column1, btnH);
 	ui->DilationFilter->setGeometry(c1, rowY + dropH - btnH, column1, btnH);
 	ui->OpeningFilter->setGeometry(c3, rowY, column3, btnH);
@@ -144,6 +144,8 @@ void MorphologyWindow::repositionWidgets() {
 MorphologyWindow::~MorphologyWindow() {
     delete ui;
 }
+
+//Methods to access the right interfaces
 void MorphologyWindow::createErosionInterface() {
 	if (ui->DilationFilter->isVisible() || ui->OpeningFilter->isVisible() || ui->ClosingFilter->isVisible()) {
 		erosionOp->showInterface();
@@ -187,17 +189,22 @@ void MorphologyWindow::createClosingInterface() {
 		repositionWidgets();
 	}
 }
+
+//function  to convert the QImage into a cv::Mat in order to well use the OpenCV library
 cv::Mat QImageToMat(const QImage& img) {
 	QImage gray = img.convertToFormat(QImage::Format_Grayscale8);
 	return cv::Mat(gray.height(), gray.width(), CV_8UC1,
 		const_cast<uchar*>(gray.bits()),
 		gray.bytesPerLine()).clone();
 }
-
+//Conversion from OpenCV to QtDesigner for the resultant image
 QImage MatToQImage(const cv::Mat& mat) {
 	return QImage(mat.data, mat.cols, mat.rows,
 		mat.step, QImage::Format_Grayscale8).copy();
 }
+
+//Application of the different possible filters by using the method define in each specific class,
+// and displaying the result in the right part of the window, with a dynamic resizing to fit the label.
 void MorphologyWindow::applyCurrentFilter() {
 	if (originalImage.isNull()) return;
 	cv::Mat output;
@@ -220,6 +227,8 @@ void MorphologyWindow::applyCurrentFilter() {
 	);
 	ui->resultLabel->setPixmap(pix);
 }
+
+//CSS
 void MorphologyWindow::applyStyles() {
 	setStyleSheet(R"(
 QMainWindow { background-color: #0d0d1c; }
