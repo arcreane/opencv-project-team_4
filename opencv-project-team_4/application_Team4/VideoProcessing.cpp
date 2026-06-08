@@ -131,12 +131,12 @@ VideoProcessingWindow::~VideoProcessingWindow()
 
 void VideoProcessingWindow::onLoadVideoFilter()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Ouvrir une vidéo", {},
-        "Vidéos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
+    QString path = QFileDialog::getOpenFileName(this, "Open a video", {},
+        "Videos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
     if (path.isEmpty()) return;
 
     if (!openVideo(m_filterCap, path)) {
-        setStatus("Erreur : impossible d'ouvrir la vidéo. Vérifiez le format.", StatusType::Error);
+        setStatus("Error: unable to open video. Check the format.", StatusType::Error);
         return;
     }
     m_filterTotal = (int)m_filterCap.get(cv::CAP_PROP_FRAME_COUNT);
@@ -147,7 +147,7 @@ void VideoProcessingWindow::onLoadVideoFilter()
     ui->exportFilterButton->setEnabled(true);
     onFilterSliderChanged(0);
 
-    setStatus(QString("Vidéo : %1×%2  |  %3 fps  |  %4 frames")
+    setStatus(QString("Video : %1×%2  |  %3 fps  |  %4 frames")
               .arg((int)m_filterCap.get(cv::CAP_PROP_FRAME_WIDTH))
               .arg((int)m_filterCap.get(cv::CAP_PROP_FRAME_HEIGHT))
               .arg((int)m_filterCap.get(cv::CAP_PROP_FPS))
@@ -176,7 +176,7 @@ void VideoProcessingWindow::onNextFilterFrame()
 void VideoProcessingWindow::onExportFilter()
 {
     if (!m_filterCap.isOpened()) return;
-    QString path = QFileDialog::getSaveFileName(this, "Exporter", "output.avi",
+    QString path = QFileDialog::getSaveFileName(this, "Export", "output.avi",
         "AVI (*.avi);;MP4 (*.mp4)");
     if (path.isEmpty()) return;
 
@@ -190,7 +190,7 @@ void VideoProcessingWindow::onExportFilter()
 
     if (!m_filterWriter.open(QDir::toNativeSeparators(path).toLocal8Bit().constData(),
                               fc, fps, cv::Size(w, h))) {
-        setStatus("Erreur : impossible de créer le fichier.", StatusType::Error); return;
+        setStatus("Error : impossible to create the file.", StatusType::Error); return;
     }
     m_filterCap.set(cv::CAP_PROP_POS_FRAMES, 0);
     m_exportCurrent = 0;
@@ -199,7 +199,7 @@ void VideoProcessingWindow::onExportFilter()
     ui->filterProgressBar->show();
     ui->exportFilterButton->setEnabled(false);
     m_exportTimer->start();
-    setStatus("Export en cours...");
+    setStatus("Exporting...");
 }
 
 void VideoProcessingWindow::onExportTimerTick()
@@ -215,7 +215,7 @@ void VideoProcessingWindow::onExportTimerTick()
     if (m_exportCurrent >= m_filterTotal) {
         m_exportTimer->stop(); m_filterWriter.release();
         ui->filterProgressBar->hide(); ui->exportFilterButton->setEnabled(true);
-        setStatus("Export terminé.", StatusType::Success);
+        setStatus("Export ended.", StatusType::Success);
     }
 }
 
@@ -225,12 +225,12 @@ void VideoProcessingWindow::onExportTimerTick()
 
 void VideoProcessingWindow::onLoadVideoFlow()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Ouvrir une vidéo", {},
-        "Vidéos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
+    QString path = QFileDialog::getOpenFileName(this, "Open a video", {},
+        "Videos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
     if (path.isEmpty()) return;
 
     if (!openVideo(m_flowCap, path)) {
-        setStatus("Erreur : impossible d'ouvrir la vidéo.", StatusType::Error); return;
+        setStatus("Error: unable to open video.", StatusType::Error); return;
     }
     m_flowTotal = (int)m_flowCap.get(cv::CAP_PROP_FRAME_COUNT);
     m_flowFrameIdx = 0; m_prevGrayFlow = cv::Mat(); m_flowPoints.clear();
@@ -243,7 +243,7 @@ void VideoProcessingWindow::onLoadVideoFlow()
     if (!first.empty()) showPixmap(ui->flowPreviewLabel, first);
     m_flowCap.set(cv::CAP_PROP_POS_FRAMES, 0);
     ui->flowCountLabel->setText(QString("0 / %1").arg(m_flowTotal - 1));
-    setStatus(QString("Vidéo : %1×%2  |  %3 fps  |  %4 frames — cliquez Play")
+    setStatus(QString("Video : %1×%2  |  %3 fps  |  %4 frames — click Play")
               .arg((int)m_flowCap.get(cv::CAP_PROP_FRAME_WIDTH))
               .arg((int)m_flowCap.get(cv::CAP_PROP_FRAME_HEIGHT))
               .arg((int)m_flowCap.get(cv::CAP_PROP_FPS))
@@ -258,7 +258,7 @@ void VideoProcessingWindow::onToggleFlowPlay()
         m_flowCap.set(cv::CAP_PROP_POS_FRAMES, (double)m_flowFrameIdx);
         m_prevGrayFlow = cv::Mat(); m_flowPoints.clear();
         m_flowTimer->start(); ui->playFlowButton->setText("Pause");
-    } else { m_flowTimer->stop(); ui->playFlowButton->setText("Play"); setStatus("Pausé."); }
+    } else { m_flowTimer->stop(); ui->playFlowButton->setText("Play"); setStatus("Paused.", StatusType::Info); }
 }
 
 void VideoProcessingWindow::onFlowSpeedChanged(int v) { m_flowTimer->setInterval(qMax(16, 210 - v * 20)); }
@@ -291,7 +291,7 @@ void VideoProcessingWindow::onFlowTimerTick()
 {
     cv::Mat curr; if (!m_flowCap.read(curr) || curr.empty()) {
         m_flowTimer->stop(); m_flowPlaying = false; ui->playFlowButton->setText("Play");
-        m_flowFrameIdx = 0; setStatus("Lecture terminée.", StatusType::Success); return;
+        m_flowFrameIdx = 0; setStatus("End of video.", StatusType::Success); return;
     }
 
     cv::Mat display;
@@ -319,7 +319,7 @@ void VideoProcessingWindow::onFlowTimerTick()
 
     if (m_flowFrameIdx >= m_flowTotal - 1) {
         m_flowTimer->stop(); m_flowPlaying = false;
-        ui->playFlowButton->setText("Play"); setStatus("Lecture terminée.", StatusType::Success);
+        ui->playFlowButton->setText("Play"); setStatus("End of video.", StatusType::Success);
     }
 }
 
@@ -385,7 +385,7 @@ void VideoProcessingWindow::onStartCam()
     m_webcam.open(0, cv::CAP_DSHOW); // DirectShow is most reliable on Windows
     if (!m_webcam.isOpened()) m_webcam.open(0); // fallback
     if (!m_webcam.isOpened()) {
-        setStatus("Erreur : impossible d'ouvrir la webcam.", StatusType::Error); return;
+        setStatus("Error: unable to open webcam.", StatusType::Error); return;
     }
     // Set reasonable resolution to avoid huge frames
     m_webcam.set(cv::CAP_PROP_FRAME_WIDTH,  640);
@@ -394,7 +394,7 @@ void VideoProcessingWindow::onStartCam()
     m_prevFrameGray = cv::Mat(); m_recording = false; m_noMotionFrames = 0;
     ui->startCamButton->setEnabled(false); ui->stopCamButton->setEnabled(true);
     m_camTimer->start();
-    setStatus("Webcam démarrée — surveillance active.");
+    setStatus("Webcam started — surveillance active.", StatusType::Success);
 }
 
 void VideoProcessingWindow::onStopCam()
@@ -403,10 +403,10 @@ void VideoProcessingWindow::onStopCam()
     if (m_recording) { m_motionWriter.release(); m_recording = false; }
     m_webcam.release(); m_prevFrameGray = cv::Mat();
     ui->startCamButton->setEnabled(true); ui->stopCamButton->setEnabled(false);
-    ui->motionIndicatorLabel->setText("● Aucun mouvement");
+    ui->motionIndicatorLabel->setText("● No motion");
     ui->motionIndicatorLabel->setStyleSheet("color:#48d890;font-family:'Segoe UI';font-size:13px;font-weight:bold;");
-    ui->camPreviewLabel->clear(); ui->camPreviewLabel->setText("Démarrez la webcam pour afficher le flux");
-    setStatus("Webcam arrêtée.");
+    ui->camPreviewLabel->clear(); ui->camPreviewLabel->setText("Start the webcam to display the feed");
+    setStatus("Webcam stopped.", StatusType::Info);
 }
 
 void VideoProcessingWindow::onMotionThreshChanged(int v) { ui->threshValueLabel->setText(QString::number(v)); }
@@ -438,19 +438,19 @@ void VideoProcessingWindow::onCamTimerTick()
                     cv::VideoWriter::fourcc('M','J','P','G'), 25.0, cv::Size(frame.cols, frame.rows));
                 m_recording = true;
                 ui->recPathLabel->setText("REC: " + m_motionRecordPath);
-                setStatus("Mouvement détecté — enregistrement démarré.", StatusType::Success);
+                setStatus("Motion detected — recording started.", StatusType::Success);
             }
         } else if (++m_noMotionFrames >= 90 && m_recording) {
             m_motionWriter.release(); m_recording = false;
-            setStatus("Enregistrement terminé : " + m_motionRecordPath, StatusType::Success);
+            setStatus("Recording finished: " + m_motionRecordPath, StatusType::Success);
         }
     }
     m_prevFrameGray = cg;
     if (m_recording && m_motionWriter.isOpened()) m_motionWriter.write(frame);
 
     ui->motionIndicatorLabel->setText(
-        motionDetected ? "● Mouvement détecté !"
-        : m_recording  ? "● Attente fin de mouvement..." : "● Aucun mouvement");
+        motionDetected ? "● Motion detected!"
+        : m_recording  ? "● Waiting for motion to end..." : "● No motion");
     ui->motionIndicatorLabel->setStyleSheet(
         motionDetected ? "color:#ff5f5f;font-family:'Segoe UI';font-size:13px;font-weight:bold;"
         : m_recording  ? "color:#ffaa44;font-family:'Segoe UI';font-size:13px;font-weight:bold;"
@@ -465,18 +465,18 @@ void VideoProcessingWindow::onCamTimerTick()
 
 void VideoProcessingWindow::onLoadVideoTimelapse()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Ouvrir une vidéo", {},
-        "Vidéos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
+    QString path = QFileDialog::getOpenFileName(this, "Open a video", {},
+        "Videos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
     if (path.isEmpty()) return;
     if (!openVideo(m_timelapseCap, path)) {
-        setStatus("Erreur : impossible d'ouvrir la vidéo.", StatusType::Error); return;
+        setStatus("Error: unable to open video.", StatusType::Error); return;
     }
     m_timelapseTotal = (int)m_timelapseCap.get(cv::CAP_PROP_FRAME_COUNT);
     ui->timelapseSlider->setRange(0, qMax(0, m_timelapseTotal - 1));
     ui->timelapseSlider->setValue(0);
     ui->exportTimelapseButton->setEnabled(true);
     onTimelapseSliderChanged(0);
-    setStatus(QString("Vidéo : %1×%2  |  %3 fps  |  %4 frames")
+    setStatus(QString("Video: %1×%2  |  %3 fps  |  %4 frames")
               .arg((int)m_timelapseCap.get(cv::CAP_PROP_FRAME_WIDTH))
               .arg((int)m_timelapseCap.get(cv::CAP_PROP_FRAME_HEIGHT))
               .arg((int)m_timelapseCap.get(cv::CAP_PROP_FPS))
@@ -504,7 +504,7 @@ void VideoProcessingWindow::onNextTimelapseFrame()
 void VideoProcessingWindow::onExportTimelapse()
 {
     if (!m_timelapseCap.isOpened()) return;
-    QString path = QFileDialog::getSaveFileName(this, "Exporter", "output.avi",
+    QString path = QFileDialog::getSaveFileName(this, "Export", "output.avi",
         "AVI (*.avi);;MP4 (*.mp4)");
     if (path.isEmpty()) return;
 
@@ -521,7 +521,7 @@ void VideoProcessingWindow::onExportTimelapse()
 
     if (!m_timelapseWriter.open(QDir::toNativeSeparators(path).toLocal8Bit().constData(),
                                  fc, outFps, cv::Size(w, h))) {
-        setStatus("Erreur.", StatusType::Error); return;
+        setStatus("Error.", StatusType::Error); return;
     }
     m_timelapseCap.set(cv::CAP_PROP_POS_FRAMES, 0); m_timelapseExportIdx = 0;
     ui->timelapseProgressBar->setRange(0, m_timelapseTotal); ui->timelapseProgressBar->setValue(0);
@@ -545,7 +545,7 @@ void VideoProcessingWindow::onTimelapseExportTick()
     if (m_timelapseExportIdx >= m_timelapseTotal) {
         m_timelapseTimer->stop(); m_timelapseWriter.release();
         ui->timelapseProgressBar->hide(); ui->exportTimelapseButton->setEnabled(true);
-        setStatus("Export terminé.", StatusType::Success);
+        setStatus("Export ended.", StatusType::Success);
     }
 }
 
@@ -555,11 +555,11 @@ void VideoProcessingWindow::onTimelapseExportTick()
 
 void VideoProcessingWindow::onLoadVideoStab()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Ouvrir une vidéo", {},
-        "Vidéos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
+    QString path = QFileDialog::getOpenFileName(this, "Open a video", {},
+        "Videos (*.mp4 *.avi *.mkv *.mov *.wmv *.MP4 *.AVI)");
     if (path.isEmpty()) return;
     if (!openVideo(m_stabCap, path)) {
-        setStatus("Erreur : impossible d'ouvrir la vidéo.", StatusType::Error); return;
+        setStatus("Error: unable to open video.", StatusType::Error); return;
     }
     m_stabTotal = (int)m_stabCap.get(cv::CAP_PROP_FRAME_COUNT);
     m_stabPhase = 0; m_stabTransforms.clear(); m_stabTrajectory.clear(); m_stabSmoothed.clear();
@@ -572,7 +572,7 @@ void VideoProcessingWindow::onLoadVideoStab()
     }
     m_stabCap.set(cv::CAP_PROP_POS_FRAMES, 0);
     ui->stabCountLabel->setText(QString("0 / %1").arg(m_stabTotal - 1));
-    setStatus(QString("Vidéo : %1×%2  |  %3 fps  |  %4 frames — cliquez Stabiliser")
+    setStatus(QString("Video: %1×%2  |  %3 fps  |  %4 frames — click Stabilize")
               .arg((int)m_stabCap.get(cv::CAP_PROP_FRAME_WIDTH))
               .arg((int)m_stabCap.get(cv::CAP_PROP_FRAME_HEIGHT))
               .arg((int)m_stabCap.get(cv::CAP_PROP_FPS))
@@ -589,7 +589,7 @@ void VideoProcessingWindow::onStabilize()
     ui->stabProgressBar->show();
     ui->stabilizeButton->setEnabled(false); ui->exportStabButton->setEnabled(false);
     m_stabTimer->start();
-    setStatus("Phase 1 : calcul des transformations...");
+    setStatus("Phase 1 : calculating transformations...");
 }
 
 void VideoProcessingWindow::onStabTimerTick()
@@ -606,7 +606,7 @@ void VideoProcessingWindow::onStabTimerTick()
     if (m_stabProcessIdx >= m_stabTotal) {
         m_stabTimer->stop();
         if (m_stabTransforms.empty()) {
-            setStatus("Stabilisation échouée : pas de transformations extraites.", StatusType::Error);
+            setStatus("Stabilization failed: no transformations extracted.", StatusType::Error);
             m_stabPhase = 0; ui->stabProgressBar->hide(); ui->stabilizeButton->setEnabled(true);
             return;
         }
@@ -615,7 +615,7 @@ void VideoProcessingWindow::onStabTimerTick()
         ui->stabProgressBar->hide();
         ui->stabilizeButton->setEnabled(true); ui->exportStabButton->setEnabled(true);
         onStabSliderChanged(0);
-        setStatus(QString("Stabilisation prête — %1 transformations.").arg(m_stabTransforms.size()),
+        setStatus(QString("Stabilization ready — %1 transformations.").arg(m_stabTransforms.size()),
                   StatusType::Success);
     }
 }
@@ -646,7 +646,7 @@ void VideoProcessingWindow::onNextStabFrame()
 void VideoProcessingWindow::onExportStab()
 {
     if (!m_stabCap.isOpened() || m_stabPhase != 2) return;
-    QString path = QFileDialog::getSaveFileName(this, "Exporter", "stabilized.avi",
+    QString path = QFileDialog::getSaveFileName(this, "Export", "stabilized.avi",
         "AVI (*.avi);;MP4 (*.mp4)");
     if (path.isEmpty()) return;
     double fps = m_stabCap.get(cv::CAP_PROP_FPS); if (fps <= 0) fps = 25.0;
@@ -657,12 +657,12 @@ void VideoProcessingWindow::onExportStab()
            : cv::VideoWriter::fourcc('M','J','P','G');
     if (!m_stabWriter.open(QDir::toNativeSeparators(path).toLocal8Bit().constData(),
                             fc, fps, cv::Size(w, h))) {
-        setStatus("Erreur.", StatusType::Error); return;
+        setStatus("Error.", StatusType::Error); return;
     }
     m_stabCap.set(cv::CAP_PROP_POS_FRAMES, 0); m_stabExportIdx = 0;
     ui->stabProgressBar->setRange(0, m_stabTotal); ui->stabProgressBar->setValue(0);
     ui->stabProgressBar->show(); ui->exportStabButton->setEnabled(false);
-    m_stabExportTimer->start(); setStatus("Export vidéo stabilisée...");
+    m_stabExportTimer->start(); setStatus("Exporting stabilized video...");
 }
 
 void VideoProcessingWindow::onStabExportTick()
@@ -677,7 +677,7 @@ void VideoProcessingWindow::onStabExportTick()
     if (m_stabExportIdx >= m_stabTotal) {
         m_stabExportTimer->stop(); m_stabWriter.release();
         ui->stabProgressBar->hide(); ui->exportStabButton->setEnabled(true);
-        setStatus("Export terminé.", StatusType::Success);
+        setStatus("Exported.", StatusType::Success);
     }
 }
 

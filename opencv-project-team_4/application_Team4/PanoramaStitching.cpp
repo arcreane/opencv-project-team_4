@@ -49,7 +49,7 @@ PanoramaStitching::PanoramaStitching(QWidget* startInterface, QWidget* parent)
     m_loadingTimer->setInterval(380);
     connect(m_loadingTimer, &QTimer::timeout, this, [this]() {
         m_loadingDots = (m_loadingDots + 1) % 4;
-        setStatus("Assemblage en cours" + QString(m_loadingDots, '.'), StatusType::Loading);
+        setStatus("Assembly in progress" + QString(m_loadingDots, '.'), StatusType::Loading);
     });
 
     // Signal–slot connections
@@ -71,7 +71,7 @@ PanoramaStitching::~PanoramaStitching() {
 void PanoramaStitching::onAddImages() {
     QStringList paths = QFileDialog::getOpenFileNames(
         this,
-        "Sélectionner des images",
+        "Select images",
         QString(),
         "Images (*.png *.jpg *.jpeg *.bmp *.tiff *.tif)"
     );
@@ -80,7 +80,7 @@ void PanoramaStitching::onAddImages() {
 
     m_imagePaths.append(paths);
     refreshThumbnails();
-    setStatus(QString("%1 image(s) chargée(s)").arg(m_imagePaths.size()), StatusType::Info);
+    setStatus(QString("%1 image(s) loaded").arg(m_imagePaths.size()), StatusType::Info);
 }
 
 void PanoramaStitching::onRemoveImage() {
@@ -89,7 +89,7 @@ void PanoramaStitching::onRemoveImage() {
         rows.append(ui->imageListWidget->row(item));
 
     if (rows.isEmpty()) {
-        setStatus("Aucune image sélectionnée.", StatusType::Info);
+        setStatus("No image selected.", StatusType::Info);
         return;
     }
 
@@ -99,18 +99,18 @@ void PanoramaStitching::onRemoveImage() {
         delete ui->imageListWidget->takeItem(row);
     }
 
-    setStatus(QString("%1 image(s) chargée(s)").arg(m_imagePaths.size()), StatusType::Info);
+    setStatus(QString("%1 image(s) loaded").arg(m_imagePaths.size()), StatusType::Info);
 }
 
 void PanoramaStitching::onStitch() {
     if (m_imagePaths.size() < 2) {
-        QMessageBox::warning(this, "Erreur", "Veuillez charger au moins 2 images.");
+        QMessageBox::warning(this, "Error", "Load at least 2 images");
         return;
     }
 
     // UI: disable controls, start loading animation
     ui->stitchButton->setEnabled(false);
-    ui->stitchButton->setText("Assemblage...");
+    ui->stitchButton->setText("Assembling...");
     ui->saveButton->setEnabled(false);
     m_loadingDots = 0;
     m_loadingTimer->start();
@@ -124,10 +124,10 @@ void PanoramaStitching::onStitch() {
         if (img.empty()) {
             m_loadingTimer->stop();
             ui->stitchButton->setEnabled(true);
-            ui->stitchButton->setText("Assembler");
-            QMessageBox::warning(this, "Erreur",
-                QString("Impossible de charger l'image :\n%1").arg(path));
-            setStatus("Échec : image illisible.", StatusType::Error);
+            ui->stitchButton->setText("Stitch");
+            QMessageBox::warning(this, "Error",
+                QString("Impossible to load image :\n%1").arg(path));
+            setStatus("Fail : unreadable image.", StatusType::Error);
             return;
         }
         images.push_back(img);
@@ -143,7 +143,7 @@ void PanoramaStitching::onStitch() {
     // Restore UI controls
     m_loadingTimer->stop();
     ui->stitchButton->setEnabled(true);
-    ui->stitchButton->setText("Assembler");
+    ui->stitchButton->setText("Stitch");
 
     switch (status) {
     case cv::Stitcher::OK:
@@ -156,50 +156,50 @@ void PanoramaStitching::onStitch() {
             )
         );
         ui->saveButton->setEnabled(true);
-        setStatus("Assemblage réussi !", StatusType::Success);
+        setStatus("Stitch succeeded !", StatusType::Success);
         break;
 
     case cv::Stitcher::ERR_NEED_MORE_IMGS:
-        QMessageBox::warning(this, "Erreur d'assemblage",
-            "Pas assez d'images ou pas assez de chevauchement entre les images.");
-        setStatus("Échec : pas assez de chevauchement.", StatusType::Error);
+        QMessageBox::warning(this, "Stitching Error",
+            "Not enough images or not enough overlap between images.");
+        setStatus("Fail : not enough overlap.", StatusType::Error);
         break;
 
     case cv::Stitcher::ERR_HOMOGRAPHY_EST_FAIL:
-        QMessageBox::warning(this, "Erreur d'assemblage",
-            "Échec de l'estimation d'homographie.");
-        setStatus("Échec : estimation d'homographie impossible.", StatusType::Error);
+        QMessageBox::warning(this, "Stitching Error",
+            "Homography estimation failed.");
+        setStatus("Fail : homography estimation impossible.", StatusType::Error);
         break;
 
     case cv::Stitcher::ERR_CAMERA_PARAMS_ADJUST_FAIL:
-        QMessageBox::warning(this, "Erreur d'assemblage",
-            "Échec de l'ajustement des paramètres caméra.");
-        setStatus("Échec : ajustement des paramètres caméra impossible.", StatusType::Error);
+        QMessageBox::warning(this, "Stitching Error",
+            "Camera parameters adjustment failed.");
+        setStatus("Fail : camera parameters adjustment impossible.", StatusType::Error);
         break;
 
     default:
-        QMessageBox::warning(this, "Erreur d'assemblage", "Erreur inconnue lors de l'assemblage.");
-        setStatus("Échec : erreur inconnue.", StatusType::Error);
+        QMessageBox::warning(this, "Stitching Error", "Unknown error during stitching.");
+        setStatus("Fail : unknown error.", StatusType::Error);
         break;
     }
 }
 
 void PanoramaStitching::onSave() {
     if (m_result.empty()) {
-        QMessageBox::warning(this, "Erreur", "Aucun résultat à sauvegarder.");
+        QMessageBox::warning(this, "Error", "No result to save.");
         return;
     }
 
     QString path = QFileDialog::getSaveFileName(
-        this, "Sauvegarder le panorama", "panorama.jpg",
+        this, "Save Panorama", "panorama.jpg",
         "Images (*.png *.jpg *.jpeg *.bmp)");
     if (path.isEmpty())
         return;
 
     if (cv::imwrite(path.toStdString(), m_result))
-        setStatus(QString("Panorama sauvegardé : %1").arg(path), StatusType::Success);
+        setStatus(QString("Panorama saved : %1").arg(path), StatusType::Success);
     else
-        QMessageBox::warning(this, "Erreur", "Impossible de sauvegarder l'image.");
+        QMessageBox::warning(this, "Error", "Impossible to save the image.");
 }
 
 void PanoramaStitching::onBack() {

@@ -177,13 +177,13 @@ GeometricTransformWindow::~GeometricTransformWindow()
 
 void GeometricTransformWindow::onLoadImage()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Ouvrir une image", {},
+    QString path = QFileDialog::getOpenFileName(this, "Open an image", {},
         "Images (*.png *.jpg *.jpeg *.bmp *.tif *.tiff)");
     if (path.isEmpty()) return;
 
     m_srcImage = cv::imread(path.toStdString());
     if (m_srcImage.empty()) {
-        setStatus("Erreur : impossible de charger l'image.", StatusType::Error);
+        setStatus("Error: Unable to load image.", StatusType::Error);
         return;
     }
 
@@ -193,7 +193,7 @@ void GeometricTransformWindow::onLoadImage()
     ui->heightSpinBox->setValue(m_srcImage.rows);
     prefillDestPoints();
 
-    setStatus(QString("Image chargée : %1 × %2 px  —  cliquez sur l'image pour placer les points")
+    setStatus(QString("Image loaded: %1 × %2 px  —  click on the image to place the points")
               .arg(m_srcImage.cols).arg(m_srcImage.rows), StatusType::Info);
 }
 
@@ -207,15 +207,15 @@ void GeometricTransformWindow::onTransformTypeChanged(int index)
     prefillDestPoints();
 
     setStatus(isPerspective
-        ? "Mode Perspective : placez 4 points source sur l'image"
-        : "Mode Affine : placez 3 points source sur l'image",
+        ? "Perspective Mode : place 4 source points on the image"
+        : "Affine Mode : place 3 source points on the image",
         StatusType::Info);
 }
 
 void GeometricTransformWindow::onApplyTransform()
 {
     if (m_srcImage.empty()) {
-        setStatus("Chargez d'abord une image.", StatusType::Error);
+        setStatus("Load an image first.", StatusType::Error);
         return;
     }
 
@@ -224,7 +224,7 @@ void GeometricTransformWindow::onApplyTransform()
 
     QVector<QPointF> srcPts = ui->sourceImageLabel->getPoints();
     if (srcPts.size() < neededPts) {
-        setStatus(QString("Il faut %1 points source (%2 placé(s) actuellement).")
+        setStatus(QString("Need of %1 point source (%2 setted now).")
                   .arg(neededPts).arg(srcPts.size()), StatusType::Error);
         return;
     }
@@ -234,7 +234,7 @@ void GeometricTransformWindow::onApplyTransform()
         auto* ix = ui->destPointsTable->item(i, 0);
         auto* iy = ui->destPointsTable->item(i, 1);
         if (!ix || !iy || ix->text().isEmpty() || iy->text().isEmpty()) {
-            setStatus(QString("Remplissez les coordonnées destination pour P%1.").arg(i + 1),
+            setStatus(QString("Fill in the destination coordinates for P%1.").arg(i + 1),
                       StatusType::Error);
             return;
         }
@@ -254,7 +254,7 @@ void GeometricTransformWindow::onApplyTransform()
             cv::warpPerspective(m_srcImage, m_resultImage, M, { outW, outH });
         }
     } catch (const cv::Exception& e) {
-        setStatus(QString("Erreur OpenCV : %1").arg(e.what()), StatusType::Error);
+        setStatus(QString("Error OpenCV : %1").arg(e.what()), StatusType::Error);
         return;
     }
 
@@ -265,7 +265,7 @@ void GeometricTransformWindow::onApplyTransform()
     showResultWithFadeIn(matToPixmap(m_resultImage)
         .scaled(displaySize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->saveButton->setEnabled(true);
-    setStatus("Transformation appliquée avec succès.", StatusType::Success);
+    setStatus("Transformation succeeded.", StatusType::Success);
 }
 
 void GeometricTransformWindow::onResetPoints()
@@ -273,23 +273,23 @@ void GeometricTransformWindow::onResetPoints()
     ui->sourceImageLabel->clearPoints();
     m_resultImage = cv::Mat();
     ui->resultLabel->clear();
-    ui->resultLabel->setText("Placez les points et cliquez sur Appliquer");
+    ui->resultLabel->setText("Put the points and click on apply");
     ui->saveButton->setEnabled(false);
-    setStatus("Points réinitialisés.", StatusType::Info);
+    setStatus("Points resetted.", StatusType::Info);
 }
 
 void GeometricTransformWindow::onSaveResult()
 {
     if (m_resultImage.empty()) return;
 
-    QString path = QFileDialog::getSaveFileName(this, "Sauvegarder l'image", {},
+    QString path = QFileDialog::getSaveFileName(this, "Save image", {},
         "PNG (*.png);;JPEG (*.jpg *.jpeg);;BMP (*.bmp)");
     if (path.isEmpty()) return;
 
     if (cv::imwrite(path.toStdString(), m_resultImage))
-        setStatus("Image sauvegardée : " + path, StatusType::Success);
+        setStatus("Image saved : " + path, StatusType::Success);
     else
-        setStatus("Erreur : impossible de sauvegarder l'image.", StatusType::Error);
+        setStatus("Error : impossible to save the image.", StatusType::Error);
 }
 
 void GeometricTransformWindow::onBack()
