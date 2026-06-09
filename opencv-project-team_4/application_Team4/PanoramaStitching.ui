@@ -3,73 +3,116 @@
  <class>PanoramaStitching</class>
  <widget class="QMainWindow" name="PanoramaStitching">
   <property name="geometry">
-   <rect><x>0</x><y>0</y><width>1200</width><height>750</height></rect>
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>750</height>
+   </rect>
   </property>
   <property name="windowTitle">
    <string>Panorama Stitching</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="mainLayout">
-    <property name="spacing"><number>0</number></property>
-    <property name="leftMargin"><number>0</number></property>
-    <property name="topMargin"><number>0</number></property>
-    <property name="rightMargin"><number>0</number></property>
-    <property name="bottomMargin"><number>0</number></property>
-
-    <!-- Header bar -->
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QFrame" name="headerFrame">
-      <property name="maximumHeight"><number>68</number></property>
-      <property name="minimumHeight"><number>68</number></property>
-      <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::NoFrame</enum>
+      </property>
       <layout class="QVBoxLayout" name="headerLayout">
-       <property name="leftMargin"><number>18</number></property>
-       <property name="topMargin"><number>10</number></property>
-       <property name="rightMargin"><number>18</number></property>
-       <property name="bottomMargin"><number>8</number></property>
-       <property name="spacing"><number>2</number></property>
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>18</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>18</number>
+       </property>
+       <property name="bottomMargin">
+        <number>8</number>
+       </property>
        <item>
         <widget class="QLabel" name="titleLabel">
-         <property name="text"><string>PANORAMA STITCHING</string></property>
+         <property name="text">
+          <string>PANORAMA STITCHING</string>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="subtitleLabel">
-         <property name="text"><string>Assemblez plusieurs images en un panorama continu</string></property>
+         <property name="text">
+          <string>Stitch multiple images together</string>
+         </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-
-    <!-- Content area -->
     <item>
      <layout class="QHBoxLayout" name="contentLayout">
-      <property name="spacing"><number>0</number></property>
-      <property name="leftMargin"><number>14</number></property>
-      <property name="topMargin"><number>10</number></property>
-      <property name="rightMargin"><number>14</number></property>
-      <property name="bottomMargin"><number>10</number></property>
-
-      <!-- Left panel -->
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>14</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>14</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
       <item>
        <widget class="QFrame" name="leftFrame">
-        <property name="minimumWidth"><number>288</number></property>
-        <property name="maximumWidth"><number>288</number></property>
-        <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
+        <property name="frameShape">
+         <enum>QFrame::Shape::NoFrame</enum>
+        </property>
         <layout class="QVBoxLayout" name="leftLayout">
-         <property name="spacing"><number>8</number></property>
-         <property name="leftMargin"><number>0</number></property>
-         <property name="topMargin"><number>0</number></property>
-         <property name="rightMargin"><number>0</number></property>
-         <property name="bottomMargin"><number>0</number></property>
-
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QLabel" name="labelImages">
-           <property name="text"><string>IMAGES CHARGÉES</string></property>
+           <property name="text">
+            <string>IMAGES LOADED</string>
+           </property>
           </widget>
          </item>
-
          <item>
           <widget class="QListWidget" name="imageListWidget">
            <property name="sizePolicy">
@@ -80,153 +123,179 @@
            </property>
           </widget>
          </item>
-
          <item>
           <widget class="QPushButton" name="addImagesButton">
-           <property name="text"><string>Ajouter des images</string></property>
-           <property name="minimumHeight"><number>36</number></property>
+           <property name="text">
+            <string>Add image</string>
+           </property>
           </widget>
          </item>
-
          <item>
           <widget class="QPushButton" name="removeImageButton">
-           <property name="text"><string>Supprimer la sélection</string></property>
-           <property name="minimumHeight"><number>32</number></property>
+           <property name="text">
+            <string>Delete image</string>
+           </property>
           </widget>
          </item>
-
          <item>
           <widget class="QFrame" name="dividerH">
-           <property name="frameShape"><enum>QFrame::Shape::HLine</enum></property>
-           <property name="frameShadow"><enum>QFrame::Shadow::Plain</enum></property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::HLine</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Plain</enum>
+           </property>
           </widget>
          </item>
-
          <item>
           <widget class="QLabel" name="labelMode">
-           <property name="text"><string>MODE D'ASSEMBLAGE</string></property>
+           <property name="text">
+            <string>Stitch mode</string>
+           </property>
           </widget>
          </item>
-
          <item>
-          <widget class="QComboBox" name="modeComboBox">
-           <property name="minimumHeight"><number>34</number></property>
-          </widget>
+          <widget class="QComboBox" name="modeComboBox"/>
          </item>
-
          <item>
           <widget class="QPushButton" name="stitchButton">
-           <property name="text"><string>Assembler</string></property>
-           <property name="minimumHeight"><number>52</number></property>
+           <property name="text">
+            <string>Stitch</string>
+           </property>
           </widget>
          </item>
-
         </layout>
        </widget>
       </item>
-
-      <!-- Vertical separator -->
       <item>
        <widget class="QFrame" name="dividerV">
-        <property name="frameShape"><enum>QFrame::Shape::VLine</enum></property>
-        <property name="frameShadow"><enum>QFrame::Shadow::Plain</enum></property>
+        <property name="frameShape">
+         <enum>QFrame::Shape::VLine</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Shadow::Plain</enum>
+        </property>
        </widget>
       </item>
-
-      <!-- Right panel -->
       <item>
        <widget class="QFrame" name="rightFrame">
-        <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>1</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="frameShape">
+         <enum>QFrame::Shape::NoFrame</enum>
+        </property>
         <layout class="QVBoxLayout" name="rightLayout">
-         <property name="spacing"><number>8</number></property>
-         <property name="leftMargin"><number>12</number></property>
-         <property name="topMargin"><number>0</number></property>
-         <property name="rightMargin"><number>0</number></property>
-         <property name="bottomMargin"><number>0</number></property>
-
+         <property name="spacing">
+          <number>8</number>
+         </property>
+         <property name="leftMargin">
+          <number>12</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QLabel" name="labelResult">
-           <property name="text"><string>RÉSULTAT</string></property>
+           <property name="text">
+            <string>RESULT</string>
+           </property>
           </widget>
          </item>
-
          <item>
           <widget class="QLabel" name="resultLabel">
-           <property name="text"><string>Chargez des images et cliquez sur Assembler</string></property>
-           <property name="alignment"><set>Qt::AlignmentFlag::AlignCenter</set></property>
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>1</verstretch>
             </sizepolicy>
            </property>
+           <property name="text">
+            <string>Load an image and click on stitch</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
           </widget>
          </item>
-
         </layout>
        </widget>
       </item>
-
      </layout>
     </item>
-
-    <!-- Footer bar -->
     <item>
      <widget class="QFrame" name="footerFrame">
-      <property name="minimumHeight"><number>46</number></property>
-      <property name="maximumHeight"><number>46</number></property>
-      <property name="frameShape"><enum>QFrame::Shape::NoFrame</enum></property>
+      <property name="frameShape">
+       <enum>QFrame::Shape::NoFrame</enum>
+      </property>
       <layout class="QHBoxLayout" name="footerLayout">
-       <property name="leftMargin"><number>14</number></property>
-       <property name="topMargin"><number>7</number></property>
-       <property name="rightMargin"><number>14</number></property>
-       <property name="bottomMargin"><number>7</number></property>
-       <property name="spacing"><number>8</number></property>
-
+       <property name="spacing">
+        <number>8</number>
+       </property>
+       <property name="leftMargin">
+        <number>14</number>
+       </property>
+       <property name="topMargin">
+        <number>7</number>
+       </property>
+       <property name="rightMargin">
+        <number>14</number>
+       </property>
+       <property name="bottomMargin">
+        <number>7</number>
+       </property>
        <item>
         <widget class="QLabel" name="statusLabel">
-         <property name="text"><string>  Prêt</string></property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>1</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="text">
+          <string>  Prêt</string>
+         </property>
         </widget>
        </item>
-
        <item>
         <widget class="QPushButton" name="saveButton">
-         <property name="text"><string>Sauvegarder</string></property>
-         <property name="minimumWidth"><number>130</number></property>
-         <property name="minimumHeight"><number>32</number></property>
-         <property name="enabled"><bool>false</bool></property>
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Save</string>
+         </property>
         </widget>
        </item>
-
        <item>
         <widget class="QPushButton" name="backButton">
-         <property name="text"><string>Retour</string></property>
-         <property name="minimumWidth"><number>110</number></property>
-         <property name="minimumHeight"><number>32</number></property>
+         <property name="text">
+          <string>Back</string>
+         </property>
         </widget>
        </item>
-
       </layout>
      </widget>
     </item>
-
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
-    <rect><x>0</x><y>0</y><width>1200</width><height>21</height></rect>
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1200</width>
+     <height>21</height>
+    </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
